@@ -1,0 +1,13 @@
+
+{
+    "data": [
+        {"id": "1001","doctora": "Dr. John", "totaldeganancias": 72, "numeromovil": "+11 223 456",  "porciento": "90"},
+        {"id": "1000","doctora": "Dr. Watch", "totaldeganancias": 65, "numeromovil": "+11 223 456",  "porciento": "50"},
+        {"id": "1002","doctora": "Dr. James", "totaldeganancias": 79,"numeromovil": "+11 223 456", "porciento": "50"},
+        {"id": "1003","doctora": "Dr. Lee", "totaldeganancias": 29, "numeromovil": "+11 223 456",  "porciento": "80"},
+        {"id": "1004","doctora": "Dr. Xang", "totaldeganancias": 15, "numeromovil": "+11 223 456",  "porciento": "30"},
+        {"id": "1005","doctora": "Dr. Bond", "totaldeganancias": 120, "numeromovil": "+11 223 456",  "porciento": "10"},
+        {"id": "1006","doctora": "Dr. Hello", "totaldeganancias": 32, "numeromovil": "+11 223 456", "porciento": "100"}
+    ]
+}
+    

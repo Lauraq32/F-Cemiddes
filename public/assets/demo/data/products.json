@@ -1,0 +1,11 @@
+
+{
+    "data": [
+        {"id": "1000", "productos": "Watch", "precio": 65, "role": "Admin","cantidad": 24},
+        {"id": "1001", "productos": "Black ","precio": 72, "role": "Admin","cantidad": 61},
+        {"id": "1002", "productos": "Blue ", "precio": 79, "role": "Not Admin","cantidad": 2},
+        {"id": "1003", "productos": "Blue ","precio": 29, "role": "Not Admin","cantidad": 25},
+        {"id": "1004", "productos": "Bracelet","precio": 15, "role": "Admin","cantidad": 76}
+    ]
+}
+    
