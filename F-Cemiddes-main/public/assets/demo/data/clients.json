@@ -1,0 +1,13 @@
+
+{
+    "data": [
+        {"id": "1001","paciente": "John", "tratamiento": "surgery" , "fecha":"01/02/2022", "numeromovil": "+11 223 456", "doctora": "Dr. Lee",  "visitasdelpaciente": "90"},
+        {"id": "1000","paciente": "Watch", "tratamiento": "surgery" , "fecha":"01/02/2022", "numeromovil": "+11 223 456", "doctora": "Dr. Lee",  "visitasdelpaciente": "50"},
+        {"id": "1002","paciente": "James", "tratamiento": "surgery" , "fecha":"01/02/2022","numeromovil": "+11 223 456", "doctora": "Dr. Lee", "visitasdelpaciente": "50"},
+        {"id": "1003","paciente": "Lee", "tratamiento": "surgery" , "fecha":"01/02/2022", "numeromovil": "+11 223 456", "doctora": "Dr. Lee",  "visitasdelpaciente": "80"},
+        {"id": "1004","paciente": "Xang", "tratamiento": "surgery" , "fecha":"01/02/2022", "numeromovil": "+11 223 456", "doctora": "Dr. Lee",  "visitasdelpaciente": "30"},
+        {"id": "1005","paciente": "Bond", "tratamiento": "surgery" , "fecha":"01/02/2022", "numeromovil": "+11 223 456", "doctora": "Dr. Lee",  "visitasdelpaciente": "10"},
+        {"id": "1006","paciente": "Hello", "tratamiento": "surgery" , "fecha":"01/02/2022", "numeromovil": "+11 223 456", "doctora": "Dr. Lee", "visitasdelpaciente": "100"}
+    ]
+}
+    
