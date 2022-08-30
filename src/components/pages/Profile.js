@@ -28,7 +28,7 @@ const Profile = () => {
     
     const getUser = () => {
         
-        axios.get("http://localhost:8080/api/users/" + userID, {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/users/` + userID, {headers})
         .then((response) => {
             const userData = response.data;
             setUser(userData);
@@ -48,9 +48,9 @@ const Profile = () => {
         let _user = {...user}
 
         if (user.uid) {
-            axios.put('http://localhost:8080/api/users/' + _user.uid, _user , {headers}, )
+            axios.put(`${process.env.REACT_APP_API_URL}/api/users/` + _user.uid, _user , {headers}, )
             .then(response => {
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'User Updated', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
                 getUser();
 
             })

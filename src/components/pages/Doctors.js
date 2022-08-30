@@ -49,7 +49,7 @@ const Doctors = () => {
     }, []);
 
     const getAllDoctors = () => {
-        axios.get("http://localhost:8080/api/doctors", {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/doctors`, {headers})
         .then((response) => {
             const allDoctors = response.data.doctors;
             setDoctors(allDoctors);
@@ -95,17 +95,17 @@ const Doctors = () => {
             let _doctors = [...doctors];
             let _doctor = { ...doctor };
             if (doctor._id) {
-                axios.put('http://localhost:8080/api/doctors/' + doctor._id, _doctor ,{headers})
+                axios.put(`${process.env.REACT_APP_API_URL}/api/doctors/` + doctor._id, _doctor ,{headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Doctor Updated', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllDoctors();                  
                 })
                 .catch(error => console.error('Error in editDoctor:',error));
             }
             else {
-                axios.post("http://localhost:8080/api/doctors", _doctor, {headers})
+                axios.post(`${process.env.REACT_APP_API_URL}/api/doctors`, _doctor, {headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Doctor Added', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Creado Exitosamente', life: 3000 });
                     getAllDoctors();
                 })
                 .catch(error => console.error('Error while posting Doctor',error));
@@ -137,9 +137,9 @@ const Doctors = () => {
         setDoctors(_doctors);
         setDeleteDoctorDialog(false);
         setDoctor(emptyDoctor);
-        axios.delete('http://localhost:8080/api/doctors/' + doctor._id, {headers})
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/doctors/` + doctor._id, {headers})
         .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Doctor Deleted', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Borrado Exitosamente', life: 3000 });
         })
         .catch(error => console.error('Error in deleteDoctor():',error));
     }
@@ -245,8 +245,8 @@ const Doctors = () => {
 
     const doctorDialogFooter = (
         <>
-            <Button label="Cancel" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
-            <Button label="Save" icon="pi pi-check" className="p-button-text" onClick={saveDoctor} />
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveDoctor} />
         </>
     );
     const deleteDoctorDialogFooter = (
@@ -279,13 +279,13 @@ const Doctors = () => {
                         <Column field="name" header="Nombre" sortable body={nameBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="phone" header="Teléfono" sortable body={phoneBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         {/* <Column field="porciento" header="Porciento" sortable body={percentBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column> */}
-                        <Column field="totaldeganancias" header="Total de ganancias" body={totalEarningsBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
+                        <Column field="totaldeganancias" header="Ganancias" body={totalEarningsBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         {/* <Column field="date" header="Fetcha" sortable body={dateBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column> */}
                     
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={doctorDialog} style={{ width: '450px' }} header="Doctor Details" modal className="p-fluid" footer={doctorDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={doctorDialog} style={{ width: '450px' }} header="Nueva Doctora" modal className="p-fluid" footer={doctorDialogFooter} onHide={hideDialog}>
                         <div className="field">
                             <label htmlFor="doctor">Doctora</label>
                             <InputText id="doctor" value={doctor.name} onChange={(e) => onInputChange(e, 'name')} autoFocus className={classNames({ 'p-invalid': submitted && !doctor.name })} />
@@ -294,7 +294,7 @@ const Doctors = () => {
                         </div>
 
                         <div className="field">
-                            <label className="mb-3">Numeromovil</label>
+                            <label className="mb-3">Telefono</label>
                             <InputText id="phone" value={doctor.phone} onChange={(e) => onInputChange(e, 'phone')} required className={classNames({ 'p-invalid': submitted && !doctor.phone })} />
                             {submitted && !doctor.phone && <small className="p-invalid">el numeromovil es necesario</small>}
                         </div>

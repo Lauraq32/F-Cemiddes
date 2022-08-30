@@ -11,6 +11,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
 import headers from '../service/token';
+import { NavLink } from 'react-router-dom';
 
 const Products = () => {
     let emptyProduct = {
@@ -36,7 +37,7 @@ const Products = () => {
     }, []);
     
     const getAllProducts = () => {
-        axios.get("http://localhost:8080/api/products", {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/products`, {headers})
         .then((response) => {
             const allProducts = response.data.products;
             console.log(allProducts)
@@ -76,18 +77,18 @@ const Products = () => {
             let _product = { ...product };
 
             if (product._id) {
-                axios.put('http://localhost:8080/api/products/' + _product._id, _product , {headers}, )
+                axios.put(`${process.env.REACT_APP_API_URL}/api/products/` + _product._id, _product , {headers}, )
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllProducts();
 
                 })
                 .catch(error => console.error('Error in editProduct:',error));
             }
             else {   
-                axios.post("http://localhost:8080/api/products", _product, {headers})
+                axios.post(`${process.env.REACT_APP_API_URL}/api/products`, _product, {headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Creado Exitosamente', life: 3000 });
                     getAllProducts();
                 })
                 .catch(error => console.error('Error while posting product',error));
@@ -116,9 +117,9 @@ const Products = () => {
         setDeleteProductDialog(false);
         setProduct(emptyProduct);
 
-        axios.delete('http://localhost:8080/api/products/' + product._id, {headers})
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/products/` + product._id, {headers})
         .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Borrado Exitosamente', life: 3000 });
         })
         .catch(error => console.error('Error in delete Product:',error));
         
@@ -179,10 +180,7 @@ const Products = () => {
 
     const nameBodyTemplate = (rowData) => {
         return (
-            <>
-                <span className="p-column-title">Productos</span>
-                {rowData.name}
-            </>
+                <NavLink to={`/products/${rowData._id}`}>{rowData.name}</NavLink>
         );
     }
 
@@ -215,7 +213,7 @@ const Products = () => {
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Manage Products</h5>
+            <h5 className="m-0">Gestion de Productos</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscar..." />
@@ -225,8 +223,8 @@ const Products = () => {
 
     const productDialogFooter = (
         <>
-            <Button label="Cancel" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
-            <Button label="Save" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
         </>
     );
     const deleteProductDialogFooter = (
@@ -262,7 +260,7 @@ const Products = () => {
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Nuevo Producto" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                         <div className="field">
                             <label htmlFor="products">Productos</label>
                             <InputText id="products" value={product.products} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />

@@ -50,7 +50,7 @@ const Clients = () => {
     }, []);
 
     const getAllClients = () => {
-        axios.get("http://localhost:8080/api/patients", {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/patients`, {headers})
         .then((response) => {
             const allClients = response.data.patients;
             setClients(allClients);
@@ -87,18 +87,18 @@ const Clients = () => {
             let _clients = [...clients];
             let _client = { ...client };
             if (client._id) {
-                axios.put('http://localhost:8080/api/patients/' + _client._id, _client , {headers}, )
+                axios.put(`${process.env.REACT_APP_API_URL}/api/patients/` + _client._id, _client , {headers}, )
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Client Updated', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllClients();
 
                 })
                 .catch(error => console.error('Error while adding client:',error));
             }
             else {
-                axios.post("http://localhost:8080/api/patients", _client, {headers})
+                axios.post(`${process.env.REACT_APP_API_URL}/api/patients`, _client, {headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Client Added', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Creado Exitosamente', life: 3000 });
                     getAllClients();
                 })
                 .catch(error => console.error('Error while posting client',error));
@@ -125,9 +125,9 @@ const Clients = () => {
         setClients(_clients);
         setDeleteClientDialog(false);
         setClient(emptyClient);
-        axios.delete('http://localhost:8080/api/patients/' + client._id, {headers})
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/patients/` + client._id, {headers})
         .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Client Deleted', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Borrado Exitosamente', life: 3000 });
         })
         .catch(error => console.error('Error in editProduct:',error));
     }
@@ -260,8 +260,8 @@ const Clients = () => {
 
     const clientDialogFooter = (
         <>
-            <Button label="Cancel" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
-            <Button label="Save" icon="pi pi-check" className="p-button-text" onClick={saveClient} />
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveClient} />
         </>
     );
     const deleteClientDialogFooter = (
@@ -292,43 +292,21 @@ const Clients = () => {
                         <Column selectionMode="multiple" headerStyle={{ width: '3rem'}}></Column>
                         <Column field="name" header="Paciente" sortable body={nameBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="phone" header="Telefono" sortable body={phoneBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
-                        <Column field="email" header="Email del Paciente" sortable body={emailBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
-                        <Column field="status" header="status" sortable body={statusBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
+                        <Column field="email" header="Correo Electronico" sortable body={emailBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
+                        <Column field="status" header="Estatus" sortable body={statusBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         
                         {<Column field="visitas" header="Visitas" sortable body={visitsBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>}
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={clientDialog} style={{ width: '450px' }} header="Client Details" modal className="p-fluid" footer={clientDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={clientDialog} style={{ width: '450px' }} header="Nuevo Cliente" modal className="p-fluid" footer={clientDialogFooter} onHide={hideDialog}>
                         <div className="field">
                             <label htmlFor="patient">Nombre del Paciente</label>
                             <InputText id="patient" value={client.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !client.name })} />
                             {submitted && !client.name && <small className="p-invalid">el nombre del paciente es necesario</small>}
                         </div>
-
-                        {/* <div className="field">
-                            <label htmlFor="tratamiento">Tratamiento</label>
-                            <InputText id="tratamiento" value={client.tratamiento} onChange={(e) => onInputChange(e, 'tratamiento')} required className={classNames({ 'p-invalid': submitted && !client.tratamiento })} />
-                            {submitted && !client.tratamiento && <small className="p-invalid">se necesita agregar el tratamiento</small>}
-                        </div> */}
-                        
-
-                        {/* <div className="field">
-                            <label htmlFor="doctora">Doctora</label>
-                            <InputText id="doctora" value={client.doctora} onChange={(e) => onInputChange(e, 'doctora')} required className={classNames({ 'p-invalid': submitted && !client.doctora })} />
-                            {submitted && !client.doctora && <small className="p-invalid">el nombre de la doctora es necesario</small>}
-                        </div> */}
-
-                        {/* <div className="formgrid grid">
-                            <div className="field col">
-                                <label htmlFor="fecha">Fecha</label>
-                                <Calendar id="fecha" value={formatDate(client.fecha)}  onChange={(e) => onCalenderChange(e,'fecha')} inputMode="date" inline={false} placeholder={formatDate(client.fecha)} />
-                                {submitted && !client.fecha && <small className="p-invalid">la fecha es necesaria</small>}
-                            </div>
-                        </div> */}
-
                         <div className="field">
-                            <label className="mb-3">Numeromovil</label>
+                            <label className="mb-3">Telefono</label>
                             <InputText id="phone" value={client.phone} onChange={(e) => onInputChange(e, 'phone')} required className={classNames({ 'p-invalid': submitted && !client.phone })} />
                         </div>
                         
@@ -343,14 +321,6 @@ const Clients = () => {
                             <InputText id="status" value={client.status} onChange={(e) => onInputChange(e, 'status')} required className={classNames({ 'p-invalid': submitted && !client.status })} />
                             {submitted && !client.status && <small className="p-invalid">se necesita agregar el status</small>}
                         </div>
-
-                        {/* <div className="field">
-                            <label htmlFor="visitasdelpaciente">Visitas del Paciente</label>
-                            <InputNumber id="visitasdelpaciente" value={client.visitasdelpaciente} onValueChange={(e) => onInputNumberChange(e, 'visitasdelpaciente')} required className={classNames({ 'p-invalid': submitted && !client.visitasdelpaciente })} />
-                            {submitted && !client.visitasdelpaciente && <small className="p-invalid">Percent is required.</small>}
-                        </div> */}
-
-                       
                     </Dialog>
 
                     <Dialog visible={deleteClientDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteClientDialogFooter} onHide={hideDeleteClientDialog}>

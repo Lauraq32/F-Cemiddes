@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseURL= "http://localhost:8080/api/";
+const baseURL= `${process.env.REACT_APP_API_URL}/api`;
 
 const headers =  {
   Authorization: localStorage.getItem('token')

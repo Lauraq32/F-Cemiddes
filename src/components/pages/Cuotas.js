@@ -49,7 +49,7 @@ const Products = () => {
     }, []);
     
     const getAllCuotas = () => {
-        axios.get("http://localhost:8080/api/patients/treatments", {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/patients/treatments`, {headers})
         .then((response) => {
             const allProducts = response.data; //comment
             setCuotas(allProducts);
@@ -58,7 +58,7 @@ const Products = () => {
     }
 
     const getAllClients = () => {
-        axios.get("http://localhost:8080/api/patients", {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/patients`, {headers})
         .then((response) => {
             const allClients = response.data.patients;
             setClients(allClients);
@@ -68,7 +68,7 @@ const Products = () => {
     }
 
     const getAllTreatments = () => {
-        axios.get("http://localhost:8080/api/treatments", {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/treatments`, {headers})
         .then((response) => {
             const allTreatments = response.data.treatments;
             setTreatments(allTreatments);
@@ -127,18 +127,18 @@ const Products = () => {
             console.log("here", _cuota)
 
             if (cuota._id) {
-                axios.put('http://localhost:8080/api/patients/treatments/' + _cuota._id, _cuota , {headers}, )
+                axios.put(`${process.env.REACT_APP_API_URL}/api/patients/treatments/` + _cuota._id, _cuota , {headers}, )
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllCuotas();
 
                 })
                 .catch(error => console.error('Error in editProduct:',error));
             }
             else {   
-                axios.post("http://localhost:8080/api/patients/treatments", _cuota, {headers})
+                axios.post(`${process.env.REACT_APP_API_URL}/api/patients/treatments`, _cuota, {headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Creado Exitosamente', life: 3000 });
                     getAllCuotas();
                 })
                 .catch(error => console.error('Error while posting cuota',error));
@@ -167,9 +167,9 @@ const Products = () => {
         setDeleteProductDialog(false);
         setCuota(emptyCuotas);
 
-        axios.delete('http://localhost:8080/api/patients/treatments/' + cuota._id, {headers})
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/patients/treatments/` + cuota._id, {headers})
         .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Borrado Exitosamente', life: 3000 });
         })
         .catch(error => console.error('Error in delete Product:',error));
         
@@ -262,7 +262,7 @@ const Products = () => {
         return (
             <>
                 <span className="p-column-title">Amount Payable</span>
-                {rowData.reservations.map(amount => amount.amountPayable)}
+                {formatCurrency(rowData.totalAmountPaid)}
             </>
         );
     }
@@ -271,7 +271,7 @@ const Products = () => {
         return (
             <>
                 <span className="p-column-title">Deuda</span>
-                {rowData.deuda}
+                {formatCurrency(rowData.deuda)}
             </>
         );
     }
@@ -287,7 +287,7 @@ const Products = () => {
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Manage Products</h5>
+            <h5 className="m-0">Gestion de Cuotas</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onInput={(e) => setGlobalFilter(e.target.value)} placeholder="Buscar..." />
@@ -297,8 +297,8 @@ const Products = () => {
 
     const productDialogFooter = (
         <>
-            <Button label="Cancel" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
-            <Button label="Save" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
         </>
     );
     const deleteProductDialogFooter = (
@@ -329,25 +329,25 @@ const Products = () => {
                         globalFilter={globalFilter} emptyMessage="No se encontraron productos." header={header} responsiveLayout="scroll">
                         <Column selectionMode="multiple" headerStyle={{ width: '3rem'}}></Column>
                         <Column field="treatment" header="Tratamiento" sortable body={treatmentBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
-                        <Column field="client" header="Client" body={clientBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
+                        <Column field="client" header="Paciente" body={clientBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="total" header="Total" body={totalPriceBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
-                        <Column field="amountPayable" header="Amount Payable" body={payableBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
+                        <Column field="amountPayable" header="Monto Pagado" body={payableBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="deuda" header="Deuda" body={deudaBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Nueva Cuota" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                         <div className="field">
                             <label htmlFor="treatment">Tratamiento</label>
-                            <Dropdown id="treatment" value={dropDownTreatment} onChange={(e) => setDropDownTreatment(e.value)} options={dropDownTreatmentValues} optionLabel="treatment" placeholder="Select" />
+                            <Dropdown id="treatment" value={dropDownTreatment} onChange={(e) => setDropDownTreatment(e.value)} options={dropDownTreatmentValues} optionLabel="treatment" placeholder="Seleccionar" />
                             {submitted && !cuota.treatmentId && <small className="p-invalid">el nombre de la doctora es necesario.</small>}
                         </div>
 
 
                         <div className="field col">
-                            <label htmlFor="client">Client</label>
-                            <Dropdown id="client" value={dropDownClient} onChange={(e) => setDropDownClient(e.value)} options={dropDownClientValues} optionLabel="client" placeholder="Select" />
+                            <label htmlFor="client">Paciente</label>
+                            <Dropdown id="client" value={dropDownClient} onChange={(e) => setDropDownClient(e.value)} options={dropDownClientValues} optionLabel="client" placeholder="Seleccionar" />
                         </div>
 
 

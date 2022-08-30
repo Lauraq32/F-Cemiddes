@@ -1,8 +1,18 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 
 
 const Dashboard = () => {
+    const token = localStorage.getItem("token");
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (!token){
+			navigate("/login");
+		}
+	}, [navigate, token]);
 
 return (
     <div className="surface-ground px-4 py-5 md:px-6 lg:px-8">
@@ -57,7 +67,7 @@ return (
                     <div className="surface-card shadow-2 p-3 border-round">
                         <div className="flex justify-content-between mb-3">
                             <div>
-                                <div className="text-800 font-medium ml-4 mt-3" style={{/* fontSize: '2rem'*/ }}>Treatments</div>
+                                <div className="text-800 font-medium ml-4 mt-3" style={{/* fontSize: '2rem'*/ }}>Tratamientos</div>
                             </div>
                             <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '3rem'/*, height: '4.5rem'*/ }}>
                                 <i className="pi pi-plus-circle text-orange-500 dashboard-icon" style={{ fontSize: '2rem' }}></i>

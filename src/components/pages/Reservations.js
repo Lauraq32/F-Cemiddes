@@ -17,13 +17,93 @@ import { MultiSelect } from "primereact/multiselect";
 import useDoctors from "../../hooks/useDoctors";
 import ReservationsTable from "../tables/ReservationsTable";
 import { formatDate } from "../../utils";
+import axios from "axios";
 
 const Reservations = () => {
   const [selectedReservation, setSelectedReservation] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [patientTreatments, setPatientTreatments] = useState([]);
+  const [dropDownPatient, setDropDownPatient] = useState([]);
+  const [patients, setPatients] = useState([]);
+  const [dropDownTreatment, setDropDownTreatment] = useState([]);
+
   const [doctors] = useDoctors();
+
+  useEffect(() => {
+    getAllProducts();
+    getAllPatients();
+  }, []);
+
+  async function getAllPatients() {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/api/patients`;
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const options = {
+        headers: {
+          Authorization: token,
+        },
+      };
+      const res = await axios.get(url, options);
+
+      setPatients(res.data.patients);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function getAllProducts() {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/api/products`;
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const options = {
+        headers: {
+          Authorization: token,
+        },
+      };
+      const res = await axios.get(url, options);
+
+      setProducts(res.data.products);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function getAllTreatments(patientId) {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/api/patients/${patientId}/treatments`;
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const options = {
+        headers: {
+          Authorization: token,
+        },
+      };
+      const res = await axios.get(url, options);
+
+      setPatientTreatments(res.data.patientTreatments);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const editReservation = (reservation) => {
     setSelectedReservation(reservation);
+  };
+
+  const formData = (reservation) => {
+    const productIds = reservation.products.map((product) => product.id);
+    return {
+      ...reservation,
+      doctorId: reservation.doctor._id,
+      patientId: reservation.patient._id,
+      patientTreatmentId: reservation.patientTreatment._id,
+      productIds,
+    };
   };
 
   const deleteReservation = (reservation) => {
@@ -34,19 +114,116 @@ const Reservations = () => {
     setSelectedReservation(null);
   };
 
-  const onCalenderChange = (event) => {
-    event.preventDefault();
+  const saveReservation = async () => {
+    try {
+      console.log(selectedReservation);
+      const url = `${process.env.REACT_APP_API_URL}/api/reservations/${selectedReservation._id}`;
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const options = {
+        headers: {
+          Authorization: token,
+        },
+      };
+      await axios.put(url, formData(selectedReservation), options);
+
+      hideEditDialog();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  const onInputChange = (e) => {
+    const { name, value } = e.target;
+    setSelectedReservation({ ...selectedReservation, [name]: value });
+  };
+
+  const Footer = (
+    <>
+      <Button
+        label="Cancelar"
+        icon="pi pi-times"
+        className="p-button-text"
+        onClick={hideEditDialog}
+      />
+      <Button
+        label="Guardar"
+        icon="pi pi-check"
+        className="p-button-text"
+        onClick={saveReservation}
+      />
+    </>
+  );
+
+  const onCalenderChange = (e) => {
+    const value = e.value;
+    const fields = { ...selectedReservation, date: value };
+    setSelectedReservation(fields);
+  };
   const findDoctor = () => {
     return doctors.find(
       (doctor) => doctor._id === selectedReservation?.doctor._id
     );
   };
 
+  const findProducts = () => {
+    const products = selectedReservation.products.map((product) => ({
+      ...product,
+      id: product._id,
+    }));
+
+    return products;
+  };
+
+  const dropDownTreatmentValues =
+    patientTreatments === null
+      ? "Loading..."
+      : patientTreatments.map((patientTreatment) => ({
+          id: patientTreatment._id,
+          name: patientTreatment.treatment.name,
+        }));
+
+  const changeDropdownPatient = (e) => {
+    const patientId = e.value ? e.value.id : "";
+
+    if (patientId) {
+      getAllTreatments(patientId);
+    }
+
+    setDropDownPatient(e.value);
+    selectedReservation({ ...selectedReservation, patientId });
+  };
+
+  const patientOptions =
+    patients === null
+      ? "Loading..."
+      : patients.map((patient) => ({
+          patient: patient.name,
+          id: patient._id,
+        }));
+
+  const changeProducts = (e) => {
+    setSelectedReservation({ ...selectedReservation, products: e.value });
+  };
+
+  const changeDoctor = (e) => {
+    setSelectedReservation({ ...selectedReservation, doctor: e.value });
+  };
+
+  const changeTreatment = (e) => {
+    const patientTreatmentId = e.value ? e.value.id : "";
+    setDropDownTreatment(e.value);
+    selectedReservation({ ...reservation, patientTreatmentId });
+  };
+
+  const productOptions = products.map((product) => ({
+    ...product,
+    id: product._id,
+  }));
+
   const submitted = false;
   const reservation = selectedReservation;
-  const reservationDoctor = findDoctor();
 
   return (
     <>
@@ -58,23 +235,31 @@ const Reservations = () => {
         <Dialog
           visible={reservation}
           style={{ width: "450px" }}
-          header="Reservation Details"
+          header="Detalles de la reservacion"
           modal
+          footer={Footer}
           className="p-fluid"
           onHide={hideEditDialog}
         >
           <div className="field">
             <label htmlFor="patient">Paciente</label>
-            <InputText
-              id="patient"
-              value={reservation.patient.name}
+            <Dropdown
+              id="client"
+              optionLabel="patient"
+              value={dropDownPatient}
+              options={patientOptions}
+              onChange={changeDropdownPatient}
+              placeholder="Seleccionar"
             />
           </div>
           <div className="field">
             <label htmlFor="treatment">Tratamiento</label>
-            <InputText
-              id="treatment"
-              value={reservation.patientTreatment.treatment.name}
+            <Dropdown
+              id="patientTreatment"
+              name="patientTreatment.treatment.name"
+              onChange={changeTreatment}
+              options={dropDownTreatmentValues}
+              value={dropDownTreatment}
             />
           </div>
           <div className="field">
@@ -83,6 +268,8 @@ const Reservations = () => {
               id="concept"
               value={reservation.concept}
               required
+              onChange={onInputChange}
+              name="concept"
               autoFocus
               className={classNames({
                 "p-invalid": submitted && !reservation.concept,
@@ -149,7 +336,7 @@ const Reservations = () => {
                   inputId="paymentType1"
                   name="paymentType"
                   value="tarjeta"
-                  checked={reservation.paymentType === "tarjeta"}
+                  checked={reservation.paymentType === "Tarjeta"}
                 />
                 <label htmlFor="paymentType1">Tarjeta</label>
               </div>
@@ -158,7 +345,7 @@ const Reservations = () => {
                   inputId="paymentType2"
                   name="paymentType"
                   value="efectivo"
-                  checked={reservation.paymentType === "efectivo"}
+                  checked={reservation.paymentType === "Efectivo"}
                 />
                 <label htmlFor="paymentType2">Efectivo</label>
               </div>
@@ -167,7 +354,7 @@ const Reservations = () => {
                   inputId="paymentType2"
                   name="paymentType"
                   value="transferencia"
-                  checked={reservation.paymentType === "transferencia"}
+                  checked={reservation.paymentType === "Transferencia"}
                 />
                 <label htmlFor="paymentType2">Transferencia</label>
               </div>
@@ -185,7 +372,18 @@ const Reservations = () => {
               options={doctors}
               optionLabel="name"
               placeholder="Select"
-              value={reservationDoctor}
+              onChange={changeDoctor}
+              value={findDoctor()}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="products">Productos</label>
+            <MultiSelect
+              optionLabel="name"
+              value={findProducts()}
+              options={productOptions}
+              placeholder="Seleccionar"
+              onChange={changeProducts}
             />
           </div>
         </Dialog>

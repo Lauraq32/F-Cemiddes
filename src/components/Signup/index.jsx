@@ -21,7 +21,7 @@ const Signup = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const url = "http://localhost:8080/api/auth/signup";
+			const url = `${process.env.REACT_APP_API_URL}/api/auth/signup`;
 			const res  = await axios.post(url, data);
 			localStorage.setItem("token", res.data.token);
 			navigate("/doctors");

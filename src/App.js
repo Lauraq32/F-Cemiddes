@@ -140,7 +140,7 @@ function App() {
                 { label: 'Reservaciones', icon: 'pi pi-fw pi-id-card', to: '/reservations' },
                 { label: 'Clientes', icon: 'pi pi-fw pi-users', to: '/Clients' },
                 { label: 'Productos', icon: 'pi pi-fw pi-shopping-cart', to: '/products' },
-                { label: 'Treatment', icon: 'pi pi-fw pi-plus-circle', to: '/treatment' },
+                { label: 'Tratamientos', icon: 'pi pi-fw pi-plus-circle', to: '/treatment' },
                 { label: 'Cuotas', icon: 'pi pi-fw pi-user-plus', to: '/cuotas' },
             ]
         }

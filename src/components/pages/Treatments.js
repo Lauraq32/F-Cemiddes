@@ -11,6 +11,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
 import headers from '../service/token';
+import { NavLink } from 'react-router-dom';
 
 const Treatments = () => {
     let emptyTreatment = {
@@ -35,7 +36,7 @@ const Treatments = () => {
     }, []);
     
     const getAllProducts = () => {
-        axios.get("http://localhost:8080/api/treatments", {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/treatments`, {headers})
         .then((response) => {
             const allProducts = response.data.treatments;
             setProducts(allProducts);
@@ -74,18 +75,18 @@ const Treatments = () => {
             let _treatment = { ...treatment };
 
             if (treatment._id) {
-                axios.put('http://localhost:8080/api/treatments/' + _treatment._id, _treatment , {headers}, )
+                axios.put(`${process.env.REACT_APP_API_URL}/api/treatments/` + _treatment._id, _treatment , {headers}, )
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllProducts();
 
                 })
                 .catch(error => console.error('Error in editProduct:',error));
             }
             else {   
-                axios.post("http://localhost:8080/api/treatments", _treatment, {headers})
+                axios.post(`${process.env.REACT_APP_API_URL}/api/treatments`, _treatment, {headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Creado Exitosamente', life: 3000 });
                     getAllProducts();
                 })
                 .catch(error => console.error('Error while posting treatment',error));
@@ -114,9 +115,9 @@ const Treatments = () => {
         setDeleteProductDialog(false);
         setProduct(emptyTreatment);
 
-        axios.delete('http://localhost:8080/api/treatments/' + treatment._id, {headers})
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/treatments/` + treatment._id, {headers})
         .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Borrado Exitosamente', life: 3000 });
         })
         .catch(error => console.error('Error in delete Product:',error));
         
@@ -136,7 +137,7 @@ const Treatments = () => {
         setDeleteProductsDialog(false);
         setSelectedProducts(null);
         
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Treatments Deleted', life: 3000 });
+        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Tratamientos Borrados', life: 3000 });
     }
 
     const onInputChange = (e, name) => {
@@ -186,10 +187,7 @@ const Treatments = () => {
 
     const treatmentBodyTemplate = (rowData) => {
         return (
-            <>
-                <span className="p-column-title">Tratamiento</span>
-                {rowData.name}
-            </>
+                <NavLink to={`/treatments/${rowData._id}`} >{rowData.name}</NavLink>
         );
     }
 
@@ -224,8 +222,8 @@ const Treatments = () => {
 
     const productDialogFooter = (
         <>
-            <Button label="Cancel" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
-            <Button label="Save" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
         </>
     );
     const deleteProductDialogFooter = (
@@ -270,7 +268,7 @@ const Treatments = () => {
                         <div className="formgrid grid">
                             <div className="field col">
                                 <label htmlFor="total">Total</label>
-                                <InputNumber id="total" value={treatment.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="currency" currency="USD" locale="en-US" />
+                                <InputNumber id="total" value={treatment.total} onValueChange={(e) => onInputNumberChange(e, 'total')} mode="currency" currency="DOP" locale="es-MX" />
                                 {submitted && !treatment.total && <small className="p-invalid">el Total es necesario.</small>}
                             </div>
                         </div>
