@@ -64,13 +64,9 @@ const Doctors = () => {
     }
 
     const openNew = () => {
-        if(localStorage.role !== 'ADMIN'){
-            setAdminDialog(true);
-        } else {
             setDoctor(emptyDoctor);
             setSubmitted(false);
             setDoctorDialog(true);
-        }
     }
 
     const hideAdminDialog = () => {

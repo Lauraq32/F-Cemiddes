@@ -49,13 +49,9 @@ const Treatments = () => {
     }
 
     const openNew = () => {
-        if(localStorage.role !== 'ADMIN'){
-            setAdminDialog(true);
-        } else {
             setProduct(emptyTreatment);
             setSubmitted(false);
             setProductDialog(true);
-        }
     }
     const hideAdminDialog = () => {
         setAdminDialog(false);

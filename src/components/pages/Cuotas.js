@@ -94,13 +94,9 @@ const Products = () => {
     }
 
     const openNew = () => {
-        if(localStorage.role !== 'ADMIN'){
-            setAdminDialog(true);
-        } else {
             setCuota(emptyCuotas);
             setSubmitted(false);
             setProductDialog(true);
-        }
     }
 
     const hideAdminDialog = () => {

@@ -51,10 +51,9 @@ const Clients = () => {
     }, []);
 
     const getAllClients = () => {
-        axios.get("http://localhost:8080/api/patients", {headers})
+        axios.get("http://localhost:3000/items", {headers})
         .then((response) => {
-            const allClients = response.data.patients;
-            setClients(allClients);
+            console.log(response);
         })
         .catch(error => console.error('Error while getting clients:',error));
     }
@@ -62,13 +61,9 @@ const Clients = () => {
 
 
     const openNew = () => {
-        if(localStorage.role !== 'ADMIN'){
-            setAdminDialog(true);
-        } else {
             setClient(emptyClient);
             setSubmitted(false);
             setClientDialog(true);
-        }
     }
     const hideAdminDialog = () => {
         //setSubmitted(false);
