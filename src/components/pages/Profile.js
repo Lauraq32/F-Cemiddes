@@ -50,7 +50,7 @@ const Profile = () => {
         if (user.uid) {
             axios.put(`${process.env.REACT_APP_API_URL}/api/users/` + _user.uid, _user , {headers}, )
             .then(response => {
-                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                 getUser();
 
             })
@@ -80,12 +80,12 @@ const Profile = () => {
 
                     <div className="field">
                         <label htmlFor="rol">Role</label>
-                        <InputText id="rol" type="text" value={user.rol}  onChange={(e) => onInputChange(e, 'rol')} disabled/>
+                        <InputText id="rol" type="text" value={user.rol}  onChange={(e) => onInputChange(e, 'rol')} />
                     </div>
 
                     <div className="field">
                         <label htmlFor="email">Email</label>
-                        <InputText id="email" type="text" value={user.email} onChange={(e) => onInputChange(e, 'email')} disabled/>
+                        <InputText id="email" type="text" value={user.email} onChange={(e) => onInputChange(e, 'email')} />
                     </div>
 
                     <div className="field">
@@ -93,13 +93,6 @@ const Profile = () => {
                         <InputText id="password" type="password" placeholder='New Password' onChange={(e) => onInputChange(e, 'password')} />
   
                     </div>
-
-                     {/* <div className="field">
-                        <label htmlFor="confirmPassword">Confirm New Password</label>
-                        <InputText id="confirmPassword" type="password" placeholder='Confirm New Password' />
-                    </div> */}
-
-
                     <Button label="Actualizar" icon="pi pi-check" className="p-button-text password-btn" onClick={saveUser} />
                 </div>
             </div> 

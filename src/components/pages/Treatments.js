@@ -27,6 +27,7 @@ const Treatments = () => {
     const [treatment, setProduct] = useState(emptyTreatment);
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
+    //const [adminDialog, setAdminDialog] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
@@ -54,6 +55,10 @@ const Treatments = () => {
         setProductDialog(true);
     }
 
+    // const hideAdminDialog = () => {
+    //     setAdminDialog(false);
+    // }
+
     const hideDialog = () => {
         setSubmitted(false);
         setProductDialog(false);
@@ -77,7 +82,7 @@ const Treatments = () => {
             if (treatment._id) {
                 axios.put(`${process.env.REACT_APP_API_URL}/api/treatments/` + _treatment._id, _treatment , {headers}, )
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllProducts();
 
                 })
@@ -86,7 +91,7 @@ const Treatments = () => {
             else {   
                 axios.post(`${process.env.REACT_APP_API_URL}/api/treatments`, _treatment, {headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Creado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllProducts();
                 })
                 .catch(error => console.error('Error while posting treatment',error));
@@ -100,13 +105,13 @@ const Treatments = () => {
     }
 
     const editProduct = (treatment) => {
-        setProduct({ ...treatment });
-        setProductDialog(true);
+            setProduct({ ...treatment });
+            setProductDialog(true);
     }
 
     const confirmDeleteProduct = (treatment) => {
-        setProduct(treatment);
-        setDeleteProductDialog(true);
+            setProduct(treatment);
+            setDeleteProductDialog(true);
     }
 
     const deleteProduct = () => {
@@ -117,7 +122,7 @@ const Treatments = () => {
 
         axios.delete(`${process.env.REACT_APP_API_URL}/api/treatments/` + treatment._id, {headers})
         .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Borrado Exitosamente', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
         })
         .catch(error => console.error('Error in delete Product:',error));
         
@@ -137,7 +142,7 @@ const Treatments = () => {
         setDeleteProductsDialog(false);
         setSelectedProducts(null);
         
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Tratamientos Borrados', life: 3000 });
+        toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Tratamientos Borrados', life: 3000 });
     }
 
     const onInputChange = (e, name) => {
@@ -229,13 +234,13 @@ const Treatments = () => {
     const deleteProductDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteProductDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteProduct} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deleteProduct} />
         </>
     );
     const deleteProductsDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteProductsDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedProducts} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedProducts} />
         </>
     );
 
@@ -258,7 +263,7 @@ const Treatments = () => {
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={productDialog} style={{ width: '450px' }} header="nuevo tratamiento" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de los tratamientos" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                         <div className="field">
                             <label htmlFor="treatment">Tratamiento</label>
                             <InputText id="treatment" value={treatment.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !treatment.name })} />
@@ -274,19 +279,25 @@ const Treatments = () => {
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
+                    <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {treatment && <span>¿Estás seguro de que quieres eliminar <b>{treatment.treatments}</b>?</span>}
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteProductsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
+                    <Dialog visible={deleteProductsDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {treatment && <span>¿Está seguro de que desea eliminar los tratamientos seleccionados?</span>}
                         </div>
                     </Dialog>
+                    {/* <Dialog visible={adminDialog} style={{ width: '450px' }}  modal  onHide={hideAdminDialog}>
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {treatment && <span>No tienes los permisos necesarios para realizar esta operacion</span>}
+                        </div>
+                    </Dialog> */}
                 </div>
             </div>
         </div>

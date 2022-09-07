@@ -23,6 +23,7 @@ const Products = () => {
 
     const [products, setProducts] = useState(null);
     const [productDialog, setProductDialog] = useState(false);
+    //const [adminDialog, setAdminDialog] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
     const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
     const [product, setProduct] = useState(emptyProduct);
@@ -56,6 +57,11 @@ const Products = () => {
         setProductDialog(true);
     }
 
+    // const hideAdminDialog = () => {
+    //     //setSubmitted(false);
+    //     setAdminDialog(false);
+    // }
+
     const hideDialog = () => {
         setSubmitted(false);
         setProductDialog(false);
@@ -79,7 +85,7 @@ const Products = () => {
             if (product._id) {
                 axios.put(`${process.env.REACT_APP_API_URL}/api/products/` + _product._id, _product , {headers}, )
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllProducts();
 
                 })
@@ -88,7 +94,7 @@ const Products = () => {
             else {   
                 axios.post(`${process.env.REACT_APP_API_URL}/api/products`, _product, {headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Creado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllProducts();
                 })
                 .catch(error => console.error('Error while posting product',error));
@@ -102,13 +108,13 @@ const Products = () => {
     }
 
     const editProduct = (product) => {
-        setProduct({ ...product });
-        setProductDialog(true);
+            setProduct({ ...product });
+            setProductDialog(true);
     }
 
     const confirmDeleteProduct = (product) => {
-        setProduct(product);
-        setDeleteProductDialog(true);
+            setProduct(product);
+            setDeleteProductDialog(true);
     }
 
     const deleteProduct = () => {
@@ -119,7 +125,7 @@ const Products = () => {
 
         axios.delete(`${process.env.REACT_APP_API_URL}/api/products/` + product._id, {headers})
         .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Borrado Exitosamente', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
         })
         .catch(error => console.error('Error in delete Product:',error));
         
@@ -139,7 +145,7 @@ const Products = () => {
         setDeleteProductsDialog(false);
         setSelectedProducts(null);
         
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
+        toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Products Deleted', life: 3000 });
     }
 
     const onInputChange = (e, name) => {
@@ -230,13 +236,13 @@ const Products = () => {
     const deleteProductDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteProductDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteProduct} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deleteProduct} />
         </>
     );
     const deleteProductsDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteProductsDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedProducts} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedProducts} />
         </>
     );
 
@@ -260,7 +266,7 @@ const Products = () => {
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Nuevo Producto" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de los productos" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                         <div className="field">
                             <label htmlFor="products">Productos</label>
                             <InputText id="products" value={product.products} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
@@ -283,19 +289,25 @@ const Products = () => {
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
+                    <Dialog visible={deleteProductDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {product && <span>¿Estás seguro de que quieres eliminar <b>{product.products}</b>?</span>}
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteProductsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
+                    <Dialog visible={deleteProductsDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {product && <span>¿Está seguro de que desea eliminar los productos seleccionados?</span>}
                         </div>
                     </Dialog>
+                    {/* <Dialog visible={adminDialog} style={{ width: '450px' }}  modal  onHide={hideAdminDialog}>
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {product && <span>No tienes los permisos necesarios para realizar esta operacion</span>}
+                        </div>
+                    </Dialog> */}
                 </div>
             </div>
         </div>

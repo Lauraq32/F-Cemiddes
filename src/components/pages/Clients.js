@@ -89,7 +89,7 @@ const Clients = () => {
             if (client._id) {
                 axios.put(`${process.env.REACT_APP_API_URL}/api/patients/` + _client._id, _client , {headers}, )
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllClients();
 
                 })
@@ -98,7 +98,7 @@ const Clients = () => {
             else {
                 axios.post(`${process.env.REACT_APP_API_URL}/api/patients`, _client, {headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Creado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllClients();
                 })
                 .catch(error => console.error('Error while posting client',error));
@@ -127,7 +127,7 @@ const Clients = () => {
         setClient(emptyClient);
         axios.delete(`${process.env.REACT_APP_API_URL}/api/patients/` + client._id, {headers})
         .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Borrado Exitosamente', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
         })
         .catch(error => console.error('Error in editProduct:',error));
     }
@@ -145,7 +145,7 @@ const Clients = () => {
         setClients(_clients);
         setDeleteClientsDialog(false);
         setSelectedClients(null);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Client Deleted', life: 3000 });
+        toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
     }
 
     const onCalenderChange = (e, patient) => {
@@ -267,13 +267,13 @@ const Clients = () => {
     const deleteClientDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteClientDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteClient} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deleteClient} />
         </>
     );
     const deleteClientsDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteClientsDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedClients} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedClients} />
         </>
     );
 
@@ -299,7 +299,7 @@ const Clients = () => {
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={clientDialog} style={{ width: '450px' }} header="Nuevo Cliente" modal className="p-fluid" footer={clientDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={clientDialog} style={{ width: '450px' }} header="Detalles del cliente" modal className="p-fluid" footer={clientDialogFooter} onHide={hideDialog}>
                         <div className="field">
                             <label htmlFor="patient">Nombre del Paciente</label>
                             <InputText id="patient" value={client.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !client.name })} />
@@ -323,14 +323,14 @@ const Clients = () => {
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteClientDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteClientDialogFooter} onHide={hideDeleteClientDialog}>
+                    <Dialog visible={deleteClientDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteClientDialogFooter} onHide={hideDeleteClientDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {client && <span>¿Estás seguro de que quieres eliminar <b>{client.patient}</b>?</span>}
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteClientsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteClientsDialogFooter} onHide={hideDeleteClientsDialog}>
+                    <Dialog visible={deleteClientsDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteClientsDialogFooter} onHide={hideDeleteClientsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {client && <span>¿Está seguro de que desea eliminar los clientes seleccionados?</span>}

@@ -16,16 +16,25 @@ import { Checkbox } from "primereact/checkbox";
 import { MultiSelect } from "primereact/multiselect";
 import useDoctors from "../../hooks/useDoctors";
 import ReservationsTable from "../tables/ReservationsTable";
-import { formatDate } from "../../utils";
 import axios from "axios";
+import fetchReservations from "../tables/ReservationsTable/index";
+
+const formatDate = (value) => {
+  return new Date(value).toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
 
 const Reservations = () => {
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [products, setProducts] = useState([]);
+  //const [adminDialog, setAdminDialog] = useState(false);
   const [patientTreatments, setPatientTreatments] = useState([]);
-  const [dropDownPatient, setDropDownPatient] = useState([]);
   const [patients, setPatients] = useState([]);
-  const [dropDownTreatment, setDropDownTreatment] = useState([]);
+  const toast = useRef(null);
+  const [deleteReservationDialog, setDeleteReservationDialog] = useState(false);
 
   const [doctors] = useDoctors();
 
@@ -85,13 +94,15 @@ const Reservations = () => {
       };
       const res = await axios.get(url, options);
 
+      console.log(res.data);
       setPatientTreatments(res.data.patientTreatments);
     } catch (error) {
       console.error(error);
     }
   }
 
-  const editReservation = (reservation) => {
+  const editReservation = async (reservation) => {
+    await getAllTreatments(reservation.patient._id);
     setSelectedReservation(reservation);
   };
 
@@ -106,8 +117,34 @@ const Reservations = () => {
     };
   };
 
-  const deleteReservation = (reservation) => {
-    console.log(reservation);
+  // const hideAdminDialog = () => {
+  //   //setSubmitted(false);
+  //   setAdminDialog(false);
+  // };
+
+  const deleteReservation = async () => {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/api/reservations/`;
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const options = {
+        headers: {
+          Authorization: token,
+        },
+      };
+      const res = await axios.delete(url, options);
+      toast.current.show({
+        severity: "success",
+        summary: "Exito",
+        detail: "Borrado Exitosamente",
+        life: 3000,
+      });
+
+      selectedReservation(reservation);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const hideEditDialog = () => {
@@ -116,7 +153,6 @@ const Reservations = () => {
 
   const saveReservation = async () => {
     try {
-      console.log(selectedReservation);
       const url = `${process.env.REACT_APP_API_URL}/api/reservations/${selectedReservation._id}`;
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -127,6 +163,12 @@ const Reservations = () => {
         },
       };
       await axios.put(url, formData(selectedReservation), options);
+      toast.current.show({
+        severity: "success",
+        summary: "Exito",
+        detail: "Actualizado Exitosamente",
+        life: 3000,
+      });
 
       hideEditDialog();
     } catch (error) {
@@ -138,6 +180,27 @@ const Reservations = () => {
     const { name, value } = e.target;
     setSelectedReservation({ ...selectedReservation, [name]: value });
   };
+
+  const hideDeleteReservationDialog = () => {
+    setDeleteReservationDialog(false);
+  };
+
+  const deleteReservationDialogFooter = (
+    <>
+      <Button
+        label="No"
+        icon="pi pi-times"
+        className="p-button-text"
+        onClick={hideDeleteReservationDialog}
+      />
+      <Button
+        label="Si"
+        icon="pi pi-check"
+        className="p-button-text"
+        onClick={deleteReservation}
+      />
+    </>
+  );
 
   const Footer = (
     <>
@@ -161,9 +224,35 @@ const Reservations = () => {
     const fields = { ...selectedReservation, date: value };
     setSelectedReservation(fields);
   };
+
   const findDoctor = () => {
     return doctors.find(
       (doctor) => doctor._id === selectedReservation?.doctor._id
+    );
+  };
+
+  const patientOptions = patients.map((patient) => ({
+    ...patient,
+    id: patient._id,
+    name: patient.name,
+  }));
+
+  const findPatient = () => {
+    return patientOptions.find(
+      (patient) => patient.id === selectedReservation?.patient._id
+    );
+  };
+
+  const dropDownTreatmentValues = patientTreatments.map((patientTreatment) => ({
+    ...patientTreatment,
+    id: patientTreatment._id,
+    name: patientTreatment.treatment.name,
+  }));
+
+  const findTreatment = () => {
+    return dropDownTreatmentValues.find(
+      (patientTreatment) =>
+        patientTreatment.id === selectedReservation?.patientTreatment._id
     );
   };
 
@@ -176,32 +265,28 @@ const Reservations = () => {
     return products;
   };
 
-  const dropDownTreatmentValues =
-    patientTreatments === null
-      ? "Loading..."
-      : patientTreatments.map((patientTreatment) => ({
-          id: patientTreatment._id,
-          name: patientTreatment.treatment.name,
-        }));
+  const onInputNumberChange = (e, name) => {
+    const value = e.value || 0;
+    const fields = { ...selectedReservation, [name]: value };
 
-  const changeDropdownPatient = (e) => {
+    setSelectedReservation(fields);
+  };
+
+  const onPaymentTypeChange = (e) => {
+    let fields = { ...selectedReservation };
+    fields["paymenttype"] = e.value;
+    setSelectedReservation(fields);
+  };
+
+  const changeDropdownPatient = async (e) => {
     const patientId = e.value ? e.value.id : "";
 
     if (patientId) {
-      getAllTreatments(patientId);
+      await getAllTreatments(patientId);
     }
 
-    setDropDownPatient(e.value);
-    selectedReservation({ ...selectedReservation, patientId });
+    setSelectedReservation({ ...selectedReservation, patient: e.value });
   };
-
-  const patientOptions =
-    patients === null
-      ? "Loading..."
-      : patients.map((patient) => ({
-          patient: patient.name,
-          id: patient._id,
-        }));
 
   const changeProducts = (e) => {
     setSelectedReservation({ ...selectedReservation, products: e.value });
@@ -212,9 +297,10 @@ const Reservations = () => {
   };
 
   const changeTreatment = (e) => {
-    const patientTreatmentId = e.value ? e.value.id : "";
-    setDropDownTreatment(e.value);
-    selectedReservation({ ...reservation, patientTreatmentId });
+    setSelectedReservation({
+      ...selectedReservation,
+      patientTreatment: e.value,
+    });
   };
 
   const productOptions = products.map((product) => ({
@@ -227,6 +313,7 @@ const Reservations = () => {
 
   return (
     <>
+      <Toast ref={toast} />
       <ReservationsTable
         onEdit={editReservation}
         onDelete={deleteReservation}
@@ -245,21 +332,37 @@ const Reservations = () => {
             <label htmlFor="patient">Paciente</label>
             <Dropdown
               id="client"
-              optionLabel="patient"
-              value={dropDownPatient}
+              optionLabel="name"
+              value={findPatient()}
               options={patientOptions}
               onChange={changeDropdownPatient}
               placeholder="Seleccionar"
             />
           </div>
           <div className="field">
+            <label className="mb-3">Telefono</label>
+            <InputText
+              id="phone"
+              value={reservation.phone}
+              name="phone"
+              onChange={(e) => onInputChange(e, "phone")}
+              required
+              className={classNames({
+                "p-invalid": submitted && !reservation.phone,
+              })}
+            />
+            {submitted && !reservation.phone && (
+              <small className="p-invalid">el telefono es necesario.</small>
+            )}
+          </div>
+          <div className="field">
             <label htmlFor="treatment">Tratamiento</label>
             <Dropdown
               id="patientTreatment"
-              name="patientTreatment.treatment.name"
+              optionLabel="name"
               onChange={changeTreatment}
               options={dropDownTreatmentValues}
-              value={dropDownTreatment}
+              value={findTreatment()}
             />
           </div>
           <div className="field">
@@ -286,11 +389,11 @@ const Reservations = () => {
               <label htmlFor="fecha">Fecha</label>
               <Calendar
                 id="fecha"
-                value={new Date(reservation.date)}
-                onChange={onCalenderChange}
+                value={formatDate(reservation.date)}
+                onChange={(e) => onCalenderChange(e, "date")}
                 inputMode="date"
                 inline={false}
-                placeholder="Coloca la fecha de reservación"
+                placeholder={formatDate(reservation.date)}
               />
               {submitted && !reservation.date && (
                 <small className="p-invalid">la fecha es necesaria</small>
@@ -303,6 +406,7 @@ const Reservations = () => {
               <InputNumber
                 id="amountPayable"
                 value={reservation.amountPayable}
+                onValueChange={(e) => onInputNumberChange(e, "amountPayable")}
                 mode="currency"
                 currency="DOP"
                 locale="es-MX"
@@ -319,6 +423,7 @@ const Reservations = () => {
             <InputNumber
               id="percent"
               value={reservation.percent}
+              onValueChange={(e) => onInputNumberChange(e, "percent")}
               required
               className={classNames({
                 "p-invalid": submitted && !reservation.percent,
@@ -335,7 +440,8 @@ const Reservations = () => {
                 <RadioButton
                   inputId="paymentType1"
                   name="paymentType"
-                  value="tarjeta"
+                  onChange={onPaymentTypeChange}
+                  value="Tarjeta"
                   checked={reservation.paymentType === "Tarjeta"}
                 />
                 <label htmlFor="paymentType1">Tarjeta</label>
@@ -344,7 +450,8 @@ const Reservations = () => {
                 <RadioButton
                   inputId="paymentType2"
                   name="paymentType"
-                  value="efectivo"
+                  onChange={onPaymentTypeChange}
+                  value="Efectivo"
                   checked={reservation.paymentType === "Efectivo"}
                 />
                 <label htmlFor="paymentType2">Efectivo</label>
@@ -353,7 +460,8 @@ const Reservations = () => {
                 <RadioButton
                   inputId="paymentType2"
                   name="paymentType"
-                  value="transferencia"
+                  onChange={onPaymentTypeChange}
+                  value="Transferencia"
                   checked={reservation.paymentType === "Transferencia"}
                 />
                 <label htmlFor="paymentType2">Transferencia</label>
@@ -386,6 +494,26 @@ const Reservations = () => {
               onChange={changeProducts}
             />
           </div>
+          <Dialog
+            visible={deleteReservationDialog}
+            style={{ width: "450px" }}
+            header="Confirmar"
+            modal
+            footer={deleteReservationDialogFooter}
+            onHide={hideDeleteReservationDialog}
+          >
+            <div className="flex align-items-center justify-content-center">
+              <i
+                className="pi pi-exclamation-triangle mr-3"
+                style={{ fontSize: "2rem" }}
+              />
+              {selectedReservation && (
+                <span>
+                  ¿Estás seguro de que quieres eliminar <b>{reservation}</b>?
+                </span>
+              )}
+            </div>
+          </Dialog>
         </Dialog>
       )}
     </>

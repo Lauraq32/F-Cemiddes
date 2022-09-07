@@ -401,13 +401,13 @@ const Reservations = () => {
     const deletePatientDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeletePatientDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deletePatient} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deletePatient} />
         </>
     );
     const deletePatientsDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeletePatientsDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedPatients} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedPatients} />
         </>
     );
 

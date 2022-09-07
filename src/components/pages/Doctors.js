@@ -33,6 +33,7 @@ const Doctors = () => {
 
     const [doctors, setDoctors] = useState(null);
     const [doctorDialog, setDoctorDialog] = useState(false);
+    //const [adminDialog, setAdminDialog] = useState(false);
     const [deleteDoctorDialog, setDeleteDoctorDialog] = useState(false);
     const [deleteDoctorsDialog, setDeleteDoctorsDialog] = useState(false);
     const [doctor, setDoctor] = useState(emptyDoctor);
@@ -68,6 +69,11 @@ const Doctors = () => {
         setDoctorDialog(true);
     }
 
+    // const hideAdminDialog = () => {
+    //     //setSubmitted(false);
+    //     setAdminDialog(false);
+    // }
+
     const hideDialog = () => {
         setSubmitted(false);
         setDoctorDialog(false);
@@ -97,7 +103,7 @@ const Doctors = () => {
             if (doctor._id) {
                 axios.put(`${process.env.REACT_APP_API_URL}/api/doctors/` + doctor._id, _doctor ,{headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllDoctors();                  
                 })
                 .catch(error => console.error('Error in editDoctor:',error));
@@ -105,7 +111,7 @@ const Doctors = () => {
             else {
                 axios.post(`${process.env.REACT_APP_API_URL}/api/doctors`, _doctor, {headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Creado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllDoctors();
                 })
                 .catch(error => console.error('Error while posting Doctor',error));
@@ -121,15 +127,13 @@ const Doctors = () => {
     }
 
     const editDoctor = (doctor) => {
-        
-        setDoctor({ ...doctor });
-        setDoctorDialog(true);
-        
+            setDoctor({ ...doctor });
+            setDoctorDialog(true);
     }
 
     const confirmDeleteDoctor = (doctor) => {
-        setDoctor(doctor);
-        setDeleteDoctorDialog(true);
+            setDoctor(doctor);
+            setDeleteDoctorDialog(true);
     }
 
     const deleteDoctor = () => {
@@ -139,7 +143,7 @@ const Doctors = () => {
         setDoctor(emptyDoctor);
         axios.delete(`${process.env.REACT_APP_API_URL}/api/doctors/` + doctor._id, {headers})
         .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Borrado Exitosamente', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
         })
         .catch(error => console.error('Error in deleteDoctor():',error));
     }
@@ -157,7 +161,7 @@ const Doctors = () => {
         setDoctors(_doctors);
         setDeleteDoctorsDialog(false);
         setSelectedDoctors(null);
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Doctor Deleted', life: 3000 });
+        toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Doctor Deleted', life: 3000 });
     }
 
     const onInputChange = (e, name) => {
@@ -252,13 +256,13 @@ const Doctors = () => {
     const deleteDoctorDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteDoctorDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteDoctor} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deleteDoctor} />
         </>
     );
     const deleteDoctorsDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteDoctorsDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedDoctors} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedDoctors} />
         </>
     );
 
@@ -285,7 +289,7 @@ const Doctors = () => {
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={doctorDialog} style={{ width: '450px' }} header="Nueva Doctora" modal className="p-fluid" footer={doctorDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={doctorDialog} style={{ width: '450px' }} header="Detalles de la doctora" modal className="p-fluid" footer={doctorDialogFooter} onHide={hideDialog}>
                         <div className="field">
                             <label htmlFor="doctor">Doctora</label>
                             <InputText id="doctor" value={doctor.name} onChange={(e) => onInputChange(e, 'name')} autoFocus className={classNames({ 'p-invalid': submitted && !doctor.name })} />
@@ -309,19 +313,25 @@ const Doctors = () => {
                         </div> */}
                     </Dialog>
 
-                    <Dialog visible={deleteDoctorDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDoctorDialogFooter} onHide={hideDeleteDoctorDialog}>
+                    <Dialog visible={deleteDoctorDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteDoctorDialogFooter} onHide={hideDeleteDoctorDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {doctor && <span>¿Estás seguro de que quieres eliminar <b>{doctor.doctor}</b>?</span>}
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteDoctorsDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteDoctorsDialogFooter} onHide={hideDeleteDoctorsDialog}>
+                    <Dialog visible={deleteDoctorsDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteDoctorsDialogFooter} onHide={hideDeleteDoctorsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {doctor && <span>¿Está seguro de que desea eliminar los médicos seleccionados?</span>}
                         </div>
                     </Dialog>
+                    {/* <Dialog visible={adminDialog} style={{ width: '450px' }}  modal  onHide={hideAdminDialog}>
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {doctor && <span>No tienes los permisos necesarios para realizar esta operacion</span>}
+                        </div>
+                    </Dialog> */}
                 </div>
             </div>
         </div>

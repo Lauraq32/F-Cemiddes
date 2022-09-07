@@ -22,6 +22,7 @@ const Products = () => {
     };
 
     const [cuotas, setCuotas] = useState(null);
+    const [adminDialog, setAdminDialog] = useState(false);
     const [productDialog, setProductDialog] = useState(false);
     const [deleteCuotaDialog, setDeleteProductDialog] = useState(false);
     const [deleteCuotasDialog, setDeleteProductsDialog] = useState(false);
@@ -98,6 +99,10 @@ const Products = () => {
         setProductDialog(true);
     }
 
+    const hideAdminDialog = () => {
+        setAdminDialog(false);
+    }
+
     const hideDialog = () => {
         setSubmitted(false);
         setProductDialog(false);
@@ -129,7 +134,7 @@ const Products = () => {
             if (cuota._id) {
                 axios.put(`${process.env.REACT_APP_API_URL}/api/patients/treatments/` + _cuota._id, _cuota , {headers}, )
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Actualizado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllCuotas();
 
                 })
@@ -138,7 +143,7 @@ const Products = () => {
             else {   
                 axios.post(`${process.env.REACT_APP_API_URL}/api/patients/treatments`, _cuota, {headers})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Creado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllCuotas();
                 })
                 .catch(error => console.error('Error while posting cuota',error));
@@ -152,13 +157,17 @@ const Products = () => {
     }
 
     const editProduct = (cuota) => {
-        setCuota({ ...cuota });
-        setProductDialog(true);
+            setCuota({ ...cuota });
+            setProductDialog(true);
     }
 
     const confirmDeleteProduct = (cuota) => {
-        setCuota(cuota);
-        setDeleteProductDialog(true);
+        if(localStorage.role !== 'ADMIN'){
+            setAdminDialog(true);
+        } else {
+            setCuota(cuota);
+            setDeleteProductDialog(true);
+        }
     }
 
     const deleteProduct = () => {
@@ -169,7 +178,7 @@ const Products = () => {
 
         axios.delete(`${process.env.REACT_APP_API_URL}/api/patients/treatments/` + cuota._id, {headers})
         .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Borrado Exitosamente', life: 3000 });
+            toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
         })
         .catch(error => console.error('Error in delete Product:',error));
         
@@ -180,7 +189,10 @@ const Products = () => {
     }
 
     const confirmDeleteSelected = () => {
-        setDeleteProductsDialog(true);
+        if(localStorage.role !== 'ADMIN')
+            setAdminDialog(true);
+        else 
+            setDeleteProductsDialog(true);
     }
 
     const deleteSelectedProducts = () => {
@@ -189,7 +201,7 @@ const Products = () => {
         setDeleteProductsDialog(false);
         setSelectedCuotas(null);
         
-        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
+        toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
     }
 
     const onInputChange = (e, name) => {
@@ -304,13 +316,13 @@ const Products = () => {
     const deleteProductDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteProductDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteProduct} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deleteProduct} />
         </>
     );
     const deleteProductsDialogFooter = (
         <>
             <Button label="No" icon="pi pi-times" className="p-button-text" onClick={hideDeleteProductsDialog} />
-            <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedProducts} />
+            <Button label="Si" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedProducts} />
         </>
     );
 
@@ -337,7 +349,7 @@ const Products = () => {
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Nueva Cuota" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de las cuotas" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                         <div className="field">
                             <label htmlFor="treatment">Tratamiento</label>
                             <Dropdown id="treatment" value={dropDownTreatment} onChange={(e) => setDropDownTreatment(e.value)} options={dropDownTreatmentValues} optionLabel="treatment" placeholder="Seleccionar" />
@@ -353,17 +365,23 @@ const Products = () => {
 
                     </Dialog>
 
-                    <Dialog visible={deleteCuotaDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
+                    <Dialog visible={deleteCuotaDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {cuota && <span>¿Estás seguro de que quieres eliminar <b>{cuota.cuotas}</b>?</span>}
                         </div>
                     </Dialog>
 
-                    <Dialog visible={deleteCuotasDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
+                    <Dialog visible={deleteCuotasDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {cuota && <span>¿Está seguro de que desea eliminar los productos seleccionados?</span>}
+                        </div>
+                    </Dialog>
+                    <Dialog visible={adminDialog} style={{ width: '450px' }}  modal  onHide={hideAdminDialog}>
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {cuota && <span>No tienes los permisos necesarios para realizar esta operacion</span>}
                         </div>
                     </Dialog>
                 </div>

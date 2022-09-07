@@ -188,6 +188,7 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
       const response = await axios.post(url, reservation, options);
 
       if (response.status === 201) {
+        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Creado Exitosamente', life: 3000 });
         await fetchReservations();
         setReservation(emptyReservation);
         hideDialog();
@@ -200,24 +201,26 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
     setSubmitting(false);
   }
 
-  async function deleteReservations() {
-    try {
-      const url = `${process.env.REACT_APP_API_URL}/api/reservations/`;
-      const token = localStorage.getItem("token");
-      if (!token) return;
+  // async function deleteReservations() {
+  //   try {
+  //     const url = `${process.env.REACT_APP_API_URL}/api/reservations/`;
+  //     const token = localStorage.getItem("token");
+  //     if (!token) return;
 
-      const options = {
-        headers: {
-          Authorization: token,
-        },
-      };
-      const res = await axios.delete(url, options);
+  //     const options = {
+  //       headers: {
+  //         Authorization: token,
+  //       },
+  //     };
+  //     await axios.delete(url, options);
+  //     toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Borrado Exitosamente', life: 3000 });
 
-      setReservation(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  //     setReservation(emptyReservation);
+  //     setDeleteReservationDialog(false)
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
   const onInputChange = (e, name) => {
     const value = (e.target && e.target.value) || "";
@@ -430,7 +433,8 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
   };
 
   const deleteReservation = (reservation) => {
-    onDelete(reservation);
+    setReservation(reservation);
+    setDeleteReservationDialog(true)
   };
 
   const deleteReservationDialogFooter = (
@@ -442,10 +446,10 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
         onClick={hideDeleteReservationDialog}
       />
       <Button
-        label="Yes"
+        label="Si"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={deleteReservations}
+        //onClick={deleteReservations}
       />
     </>
   );
@@ -724,7 +728,7 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
             <Dialog
               visible={deleteReservationDialog}
               style={{ width: "450px" }}
-              header="Confirm"
+              header="Confirmar"
               modal
               footer={deleteReservationDialogFooter}
               onHide={hideDeleteReservationDialog}
