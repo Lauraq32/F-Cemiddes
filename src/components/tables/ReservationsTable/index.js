@@ -540,7 +540,7 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
             ></Column>
             <Column
               field="percent"
-              header="Porciento"
+              header="Porcentaje"
               sortable
               body={percentBodyTemplate}
               headerStyle={{ width: "14%", minWidth: "10rem" }}
@@ -630,7 +630,7 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
               />
             </div>
             <div className="field">
-              <label htmlFor="percent">Porciento</label>
+              <label htmlFor="percent">Porcentaje</label>
               <InputNumber
                 id="percent"
                 value={patient.percent}
