@@ -29,7 +29,7 @@ const header = (
   </div>
 );
 
-const ReservationsTable = ({ onEdit, onDelete }) => {
+const ReservationsTable = ({ onEdit, onDelete, onSelect }) => {
   const formatDate = (value) => {
     return new Date(value).toLocaleDateString("en-GB", {
       day: "2-digit",
@@ -355,7 +355,7 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
         }));
 
   const selectReservation = (e) => {
-    console.log(e.target.value);
+    onSelect(e.data);
   };
 
   const dropDownTreatmentValues =
@@ -484,8 +484,8 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
           <DataTable
             ref={dt}
             value={reservations}
-            //selection={selectedReservation}
-            onSelectionChange={selectReservation}
+            selectionMode="single"
+            onRowSelect={selectReservation}
             dataKey="id"
             paginator
             rows={10}
@@ -497,7 +497,7 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
             header={header}
             responsiveLayout="scroll"
           >
-            <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
+            {/* <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} /> */}
             <Column field="concept" header="Concepto" sortable />
             <Column
               field="amountPayable"
