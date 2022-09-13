@@ -428,6 +428,15 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
     setReservation(fields);
   };
 
+  const treatmentBodyTemplate = (rowData) => {
+    return (
+      <>
+        <span className="p-column-title">Tratamiento</span>
+        {rowData.patientTreatment.treatment.name}
+      </>
+    );
+  };
+
   const editReservation = (reservation) => {
     onEdit(reservation);
   };
@@ -524,6 +533,7 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
               headerStyle={headerStyle}
               sortable
             />
+             <Column field="tratamiento" header="Tratamiento" sortable body={treatmentBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
             <Column
               field="phone"
               header="Telefono"

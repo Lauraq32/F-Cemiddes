@@ -419,7 +419,7 @@ const Reservations = () => {
             </div>
           </div>
           <div className="field">
-            <label htmlFor="percent">Porciento</label>
+            <label htmlFor="percent">Porcentaje</label>
             <InputNumber
               id="percent"
               value={reservation.percent}

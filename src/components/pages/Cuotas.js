@@ -342,7 +342,7 @@ const Products = () => {
                         <Column selectionMode="multiple" headerStyle={{ width: '3rem'}}></Column>
                         <Column field="treatment" header="Tratamiento" sortable body={treatmentBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="client" header="Paciente" body={clientBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
-                        <Column field="total" header="Total" body={totalPriceBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
+                        <Column field="total" header="Total del tratamiento" body={totalPriceBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="amountPayable" header="Monto Pagado" body={payableBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="deuda" header="Deuda" body={deudaBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         
