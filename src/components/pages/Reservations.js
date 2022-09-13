@@ -324,7 +324,7 @@ const Reservations = () => {
       <ReservationsTable
         onEdit={editReservation}
         onDelete={deleteReservation}
-        onSelect={showSelectedReservationDialog}
+        onShowDetails={showSelectedReservationDialog}
       />
       {reservation && (
         <Dialog

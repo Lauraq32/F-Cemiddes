@@ -14,6 +14,7 @@ import { MultiSelect } from "primereact/multiselect";
 import { InputNumber } from "primereact/inputnumber";
 import { Calendar } from "primereact/calendar";
 import { RadioButton } from "primereact/radiobutton";
+import "./styles.scss";
 
 // TODO: fetch reservations from the backend
 
@@ -29,7 +30,7 @@ const header = (
   </div>
 );
 
-const ReservationsTable = ({ onEdit, onDelete, onSelect }) => {
+const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
   const formatDate = (value) => {
     return new Date(value).toLocaleDateString("en-GB", {
       day: "2-digit",
@@ -354,8 +355,8 @@ const ReservationsTable = ({ onEdit, onDelete, onSelect }) => {
           id: patient._id,
         }));
 
-  const selectReservation = (e) => {
-    onSelect(e.data);
+  const showDetails = (reservationData) => {
+    onShowDetails(reservationData);
   };
 
   const dropDownTreatmentValues =
@@ -456,15 +457,20 @@ const ReservationsTable = ({ onEdit, onDelete, onSelect }) => {
 
   const actionButtons = (rowData) => {
     return (
-      <div className="actions">
+      <div className="datatable-actions">
+        <Button
+          icon="pi pi-eye"
+          className="p-button-rounded p-button-info"
+          onClick={() => showDetails(rowData)}
+        />
         <Button
           icon="pi pi-pencil"
-          className="p-button-rounded p-button-success mr-2"
+          className="p-button-rounded p-button-success"
           onClick={() => editReservation(rowData)}
         />
         <Button
           icon="pi pi-trash"
-          className="p-button-rounded p-button-warning mt-2"
+          className="p-button-rounded p-button-warning"
           onClick={() => deleteReservation(rowData)}
         />
       </div>
@@ -484,8 +490,7 @@ const ReservationsTable = ({ onEdit, onDelete, onSelect }) => {
           <DataTable
             ref={dt}
             value={reservations}
-            selectionMode="single"
-            onRowSelect={selectReservation}
+            selectionMode="multiple"
             dataKey="id"
             paginator
             rows={10}
@@ -497,7 +502,7 @@ const ReservationsTable = ({ onEdit, onDelete, onSelect }) => {
             header={header}
             responsiveLayout="scroll"
           >
-            {/* <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} /> */}
+            <Column selectionMode="multiple" headerStyle={{ width: "3rem" }} />
             <Column field="concept" header="Concepto" sortable />
             <Column
               field="amountPayable"
