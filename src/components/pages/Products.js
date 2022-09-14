@@ -12,6 +12,7 @@ import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
 import headers from '../service/token';
 import { NavLink } from 'react-router-dom';
+import { useDialog } from "../../hooks/useDialog";
 
 const Products = () => {
     let emptyProduct = {
@@ -32,6 +33,7 @@ const Products = () => {
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
+    const [dialogIsVisible, dialogContent, showDialog, hideDialog] = useDialog();
     
     useEffect(() => {
         getAllProducts();
@@ -62,7 +64,7 @@ const Products = () => {
     //     setAdminDialog(false);
     // }
 
-    const hideDialog = () => {
+    const hideProductDialog = () => {
         setSubmitted(false);
         setProductDialog(false);
     }
@@ -206,13 +208,18 @@ const Products = () => {
                 {formatCurrency(rowData.price)}
             </>
         );
-    }
+    };
+
+    const showSelectedProductDialog = product => {
+        showDialog(product);
+    };
 
     const actionBodyTemplate = (rowData) => {
         return (
-            <div className="actions">
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editProduct(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning mt-2" onClick={() => confirmDeleteProduct(rowData)} />
+            <div className="datatable-actions">
+                <Button icon="pi pi-eye" className="p-button-rounded p-button-info" onClick={() => showSelectedProductDialog(rowData)} />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" onClick={() => editProduct(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteProduct(rowData)} />
             </div>
         );
     }
@@ -229,7 +236,7 @@ const Products = () => {
 
     const productDialogFooter = (
         <>
-            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideProductDialog} />
             <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
         </>
     );
@@ -266,7 +273,7 @@ const Products = () => {
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de los productos" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de los productos" modal className="p-fluid" footer={productDialogFooter} onHide={hideProductDialog}>
                         <div className="field">
                             <label htmlFor="products">Productos</label>
                             <InputText id="products" value={product.products} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
@@ -308,6 +315,21 @@ const Products = () => {
                             {product && <span>No tienes los permisos necesarios para realizar esta operacion</span>}
                         </div>
                     </Dialog> */}
+                    {dialogIsVisible && 
+                        <Dialog 
+                        visible={dialogIsVisible}
+                        style={{ width: "450px" }}
+                        header="Detalles de producto"
+                        footer={<div />}
+                        className="p-fluid"
+                        onHide={hideDialog}
+                        modal>
+                        <div className="modal-content">
+                        <p><b>Nombre:</b>{" "}{dialogContent.name}</p>
+                        <p><b>Cantidad:</b>{" "}{dialogContent.amount}</p>
+                        <p><b>Precio:</b>{" "}{dialogContent.price}</p>
+                        </div>
+                        </Dialog>}
                 </div>
             </div>
         </div>

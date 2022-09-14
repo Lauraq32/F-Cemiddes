@@ -10,6 +10,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
+import { useDialog } from "../../hooks/useDialog";
 
 import axios from 'axios';
 import headers from '../service/token';
@@ -38,6 +39,7 @@ const Products = () => {
 
     const [dropDownClient, setDropDownClient] = useState([]);
     const [dropDownTreatment, setDropDownTreatment] = useState([]);
+    const [dialogIsVisible, dialogContent, showDialog, hideDialog] = useDialog();
 
 
     //const [treatments, setTreatments] = useState(null);
@@ -103,7 +105,7 @@ const Products = () => {
         setAdminDialog(false);
     }
 
-    const hideDialog = () => {
+    const hideDuesDialog = () => {
         setSubmitted(false);
         setProductDialog(false);
     }
@@ -220,6 +222,10 @@ const Products = () => {
         setCuota(_product);
     }
 
+    const showDueDetailsDialog = fee => {
+        showDialog(fee);
+    }
+
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
@@ -290,9 +296,10 @@ const Products = () => {
 
     const actionBodyTemplate = (rowData) => {
         return (
-            <div className="actions">
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editProduct(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning mt-2" onClick={() => confirmDeleteProduct(rowData)} />
+            <div className="datatable-actions">
+                <Button icon="pi pi-eye" className="p-button-rounded p-button-info" onClick={() => showDueDetailsDialog(rowData)} />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" onClick={() => editProduct(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteProduct(rowData)} />
             </div>
         );
     }
@@ -309,7 +316,7 @@ const Products = () => {
 
     const productDialogFooter = (
         <>
-            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDuesDialog} />
             <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
         </>
     );
@@ -349,7 +356,7 @@ const Products = () => {
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de las cuotas" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de las cuotas" modal className="p-fluid" footer={productDialogFooter} onHide={hideDuesDialog}>
                         <div className="field">
                             <label htmlFor="treatment">Tratamiento</label>
                             <Dropdown id="treatment" value={dropDownTreatment} onChange={(e) => setDropDownTreatment(e.value)} options={dropDownTreatmentValues} optionLabel="treatment" placeholder="Seleccionar" />
@@ -384,6 +391,23 @@ const Products = () => {
                             {cuota && <span>No tienes los permisos necesarios para realizar esta operacion</span>}
                         </div>
                     </Dialog>
+                    {dialogIsVisible && 
+                        <Dialog 
+                        visible={dialogIsVisible}
+                        style={{ width: "450px" }}
+                        header="Detalles de cuota"
+                        footer={<div />}
+                        className="p-fluid"
+                        onHide={hideDialog}
+                        modal>
+                        <div className="modal-content">
+                        <p><b>Tratamiento:</b>{" "}{dialogContent.treatment.name}</p>
+                        <p><b>Nombre:</b>{" "}{dialogContent.patient.name}</p>
+                        <p><b>Total:</b>{" "}{dialogContent.deuda + dialogContent.totalAmountPaid}</p>
+                        <p><b>Monto pagado:</b>{" "}{dialogContent.totalAmountPaid}</p>
+                        <p><b>Monto pagado:</b>{" "}{dialogContent.deuda}</p>
+                        </div>
+                        </Dialog>}
                 </div>
             </div>
         </div>

@@ -29,7 +29,7 @@ const header = (
   </div>
 );
 
-const ReservationsTable = ({ onEdit, onDelete }) => {
+const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
   const formatDate = (value) => {
     return new Date(value).toLocaleDateString("en-GB", {
       day: "2-digit",
@@ -354,8 +354,8 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
           id: patient._id,
         }));
 
-  const selectReservation = (e) => {
-    console.log(e.target.value);
+  const showDetails = (reservationData) => {
+    onShowDetails(reservationData);
   };
 
   const dropDownTreatmentValues =
@@ -465,15 +465,20 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
 
   const actionButtons = (rowData) => {
     return (
-      <div className="actions">
+      <div className="datatable-actions">
+        <Button
+          icon="pi pi-eye"
+          className="p-button-rounded p-button-info"
+          onClick={() => showDetails(rowData)}
+        />
         <Button
           icon="pi pi-pencil"
-          className="p-button-rounded p-button-success mr-2"
+          className="p-button-rounded p-button-success"
           onClick={() => editReservation(rowData)}
         />
         <Button
           icon="pi pi-trash"
-          className="p-button-rounded p-button-warning mt-2"
+          className="p-button-rounded p-button-warning"
           onClick={() => deleteReservation(rowData)}
         />
       </div>
@@ -493,8 +498,7 @@ const ReservationsTable = ({ onEdit, onDelete }) => {
           <DataTable
             ref={dt}
             value={reservations}
-            //selection={selectedReservation}
-            onSelectionChange={selectReservation}
+            selectionMode="multiple"
             dataKey="id"
             paginator
             rows={10}

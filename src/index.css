@@ -11,3 +11,8 @@ code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
 		monospace;
 }
+
+.datatable-actions {
+  display: flex;
+  gap: 0.75rem;
+}

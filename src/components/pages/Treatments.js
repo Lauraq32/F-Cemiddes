@@ -12,6 +12,7 @@ import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
 import headers from '../service/token';
 import { NavLink } from 'react-router-dom';
+import { useDialog } from "../../hooks/useDialog";
 
 const Treatments = () => {
     let emptyTreatment = {
@@ -31,6 +32,7 @@ const Treatments = () => {
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
+    const [dialogIsVisible, dialogContent, showDialog, hideDialog] = useDialog();
     
     useEffect(() => {
         getAllProducts();
@@ -59,7 +61,7 @@ const Treatments = () => {
     //     setAdminDialog(false);
     // }
 
-    const hideDialog = () => {
+    const hideTreatmentDialog = () => {
         setSubmitted(false);
         setProductDialog(false);
     }
@@ -161,6 +163,10 @@ const Treatments = () => {
         setProduct(_treatment);
     }
 
+    const showTreatmentDetailsDialog = treatment => {
+        showDialog(treatment);
+    }
+
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
@@ -208,9 +214,10 @@ const Treatments = () => {
 
     const actionBodyTemplate = (rowData) => {
         return (
-            <div className="actions">
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editProduct(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning mt-2" onClick={() => confirmDeleteProduct(rowData)} />
+            <div className="datatable-actions">
+                <Button icon="pi pi-eye" className="p-button-rounded p-button-info" onClick={() => showTreatmentDetailsDialog(rowData)} />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" onClick={() => editProduct(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteProduct(rowData)} />
             </div>
         );
     }
@@ -227,7 +234,7 @@ const Treatments = () => {
 
     const productDialogFooter = (
         <>
-            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideTreatmentDialog} />
             <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveProduct} />
         </>
     );
@@ -263,7 +270,7 @@ const Treatments = () => {
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de los tratamientos" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de los tratamientos" modal className="p-fluid" footer={productDialogFooter} onHide={hideTreatmentDialog}>
                         <div className="field">
                             <label htmlFor="treatment">Tratamiento</label>
                             <InputText id="treatment" value={treatment.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !treatment.name })} />
@@ -298,6 +305,20 @@ const Treatments = () => {
                             {treatment && <span>No tienes los permisos necesarios para realizar esta operacion</span>}
                         </div>
                     </Dialog> */}
+                     {dialogIsVisible && 
+                        <Dialog 
+                        visible={dialogIsVisible}
+                        style={{ width: "450px" }}
+                        header="Detalles de producto"
+                        footer={<div />}
+                        className="p-fluid"
+                        onHide={hideDialog}
+                        modal>
+                        <div className="modal-content">
+                        <p><b>Nombre:</b>{" "}{dialogContent.name}</p>
+                        <p><b>Total:</b>{" "}{dialogContent.total}</p>
+                        </div>
+                        </Dialog>}
                 </div>
             </div>
         </div>

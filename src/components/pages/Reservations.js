@@ -18,6 +18,7 @@ import useDoctors from "../../hooks/useDoctors";
 import ReservationsTable from "../tables/ReservationsTable";
 import axios from "axios";
 import fetchReservations from "../tables/ReservationsTable/index";
+import { useDialog } from "../../hooks/useDialog";
 
 const formatDate = (value) => {
   return new Date(value).toLocaleDateString("en-US", {
@@ -37,6 +38,7 @@ const Reservations = () => {
   const [deleteReservationDialog, setDeleteReservationDialog] = useState(false);
 
   const [doctors] = useDoctors();
+  const [dialogIsVisible, dialogContent, showDialog, hideDialog] = useDialog();
 
   useEffect(() => {
     getAllProducts();
@@ -94,7 +96,7 @@ const Reservations = () => {
       };
       const res = await axios.get(url, options);
 
-      console.log(res.data);
+      // console.log(res.data);
       setPatientTreatments(res.data.patientTreatments);
     } catch (error) {
       console.error(error);
@@ -184,6 +186,11 @@ const Reservations = () => {
   const hideDeleteReservationDialog = () => {
     setDeleteReservationDialog(false);
   };
+
+  const showSelectedReservationDialog = (reservation) => {
+    showDialog(reservation);
+  };
+
 
   const deleteReservationDialogFooter = (
     <>
@@ -317,6 +324,7 @@ const Reservations = () => {
       <ReservationsTable
         onEdit={editReservation}
         onDelete={deleteReservation}
+        onShowDetails={showSelectedReservationDialog}
       />
       {reservation && (
         <Dialog
@@ -516,6 +524,26 @@ const Reservations = () => {
           </Dialog>
         </Dialog>
       )}
+      {dialogIsVisible && 
+        <Dialog 
+          visible={dialogIsVisible}
+          style={{ width: "450px" }}
+          header="Detalles de la reservación"
+          footer={<div />}
+          className="p-fluid"
+          onHide={hideDialog}
+          modal>
+          <div className="modal-content">
+          <p><b>Concepto:</b>{" "}{dialogContent.concept}</p>
+          <p><b>Monto pagado:</b>{" "}{dialogContent.amountPayable}</p>
+          <p><b>Fecha:</b>{" "}{dialogContent.date}</p>
+          <p><b>Doctor:</b>{" "}{dialogContent.doctor.name}</p>
+          <p><b>Paciente:</b>{" "}{dialogContent.patient.name}</p>
+          <p><b>Tipo de pago:</b>{" "}{dialogContent.patientType}</p>
+          <p><b>Porcentaje:</b>{" "}{dialogContent.percent}</p>
+          <p><b>Tel&eacute;fono:</b>{" "}{dialogContent.phone}</p>
+          </div>
+        </Dialog>}
     </>
   );
 };

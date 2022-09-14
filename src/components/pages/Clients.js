@@ -13,6 +13,7 @@ import { NavLink } from 'react-router-dom';
 import {Calendar} from 'primereact/calendar';
 import axios from 'axios';
 import headers from '../service/token';
+import { useDialog } from "../../hooks/useDialog";
 
 const formatDate = (value) => {
     return new Date (value).toLocaleDateString('en-US', {
@@ -41,6 +42,7 @@ const Clients = () => {
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
+    const [dialogIsVisible, dialogContent, showDialog, hideDialog] = useDialog();
 
     useEffect(() => {
         // const clientService = new ClientService();
@@ -66,7 +68,7 @@ const Clients = () => {
         setClientDialog(true);
     }
 
-    const hideDialog = () => {
+    const hideClientDialog = () => {
         setSubmitted(false);
         setClientDialog(false);
     }
@@ -237,13 +239,18 @@ const Clients = () => {
         );
     }
 
+    const showSelectedClientDialog = client => {
+        showDialog(client);
+    }
+
 
 
     const actionBodyTemplate = (rowData) => {
         return (
-            <div className="actions">
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editClient(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning mt-2" onClick={() => confirmDeleteClient(rowData)} />
+            <div className="datatable-actions">
+                <Button icon="pi pi-eye" className="p-button-rounded p-button-info" onClick={() => showSelectedClientDialog(rowData)} />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" onClick={() => editClient(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteClient(rowData)} />
             </div>
         );
     }
@@ -260,7 +267,7 @@ const Clients = () => {
 
     const clientDialogFooter = (
         <>
-            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideClientDialog} />
             <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveClient} />
         </>
     );
@@ -299,7 +306,7 @@ const Clients = () => {
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={clientDialog} style={{ width: '450px' }} header="Detalles del cliente" modal className="p-fluid" footer={clientDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={clientDialog} style={{ width: '450px' }} header="Detalles del cliente" modal className="p-fluid" footer={clientDialogFooter} onHide={hideClientDialog}>
                         <div className="field">
                             <label htmlFor="patient">Nombre del Paciente</label>
                             <InputText id="patient" value={client.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !client.name })} />
@@ -336,6 +343,22 @@ const Clients = () => {
                             {client && <span>¿Está seguro de que desea eliminar los clientes seleccionados?</span>}
                         </div>
                     </Dialog>
+                    {dialogIsVisible && 
+                        <Dialog 
+                        visible={dialogIsVisible}
+                        style={{ width: "450px" }}
+                        header="Detalles de cliente"
+                        footer={<div />}
+                        className="p-fluid"
+                        onHide={hideDialog}
+                        modal>
+                        <div className="modal-content">
+                        <p><b>Paciente:</b>{" "}{dialogContent.name}</p>
+                        <p><b>Tel&eacute;fono:</b>{" "}{dialogContent.phone}</p>
+                        <p><b>Correo electr&oacute;nico:</b>{" "}{dialogContent.email}</p>
+                        <p><b>Visitas:</b>{" "}{dialogContent.visitas}</p>
+                        </div>
+                        </Dialog>}
                 </div>
             </div>
         </div>
