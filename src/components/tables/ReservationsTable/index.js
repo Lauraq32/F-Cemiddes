@@ -14,7 +14,6 @@ import { MultiSelect } from "primereact/multiselect";
 import { InputNumber } from "primereact/inputnumber";
 import { Calendar } from "primereact/calendar";
 import { RadioButton } from "primereact/radiobutton";
-import "./styles.scss";
 
 // TODO: fetch reservations from the backend
 
