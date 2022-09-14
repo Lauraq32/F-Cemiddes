@@ -12,6 +12,7 @@ import { InputText } from 'primereact/inputtext';
 import {Calendar} from 'primereact/calendar';
 import headers from '../service/token';
 import axios from 'axios';
+import { useDialog } from "../../hooks/useDialog";
 
 const formatDate = (value) => {
     return new Date (value).toLocaleDateString('en-US', {
@@ -42,6 +43,7 @@ const Doctors = () => {
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
+    const [dialogIsVisible, dialogContent, showDialog, hideDialog] = useDialog();
 
     useEffect(() => {
         // const doctorService = new DoctorService();
@@ -74,7 +76,7 @@ const Doctors = () => {
     //     setAdminDialog(false);
     // }
 
-    const hideDialog = () => {
+    const hideDoctorDialog = () => {
         setSubmitted(false);
         setDoctorDialog(false);
     }
@@ -228,11 +230,16 @@ const Doctors = () => {
         );
     }
 
+    const showSelectedDoctorDialog = doctor => {
+        showDialog(doctor)
+    }
+
     const actionBodyTemplate = (rowData) => {
         return (
-            <div className="actions">
-                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success mr-2" onClick={() => editDoctor(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning mt-2" onClick={() => confirmDeleteDoctor(rowData)} />
+            <div className="datatable-actions">
+                <Button icon="pi pi-eye" className="p-button-rounded p-button-info" onClick={() => showSelectedDoctorDialog(rowData)} />
+                <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" onClick={() => editDoctor(rowData)} />
+                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteDoctor(rowData)} />
             </div>
         );
     }
@@ -249,7 +256,7 @@ const Doctors = () => {
 
     const doctorDialogFooter = (
         <>
-            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+            <Button label="Cancelar" icon="pi pi-times" className="p-button-text" onClick={hideDoctorDialog} />
             <Button label="Guardar" icon="pi pi-check" className="p-button-text" onClick={saveDoctor} />
         </>
     );
@@ -289,7 +296,7 @@ const Doctors = () => {
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
-                    <Dialog visible={doctorDialog} style={{ width: '450px' }} header="Detalles de la doctora" modal className="p-fluid" footer={doctorDialogFooter} onHide={hideDialog}>
+                    <Dialog visible={doctorDialog} style={{ width: '450px' }} header="Detalles de la doctora" modal className="p-fluid" footer={doctorDialogFooter} onHide={hideDoctorDialog}>
                         <div className="field">
                             <label htmlFor="doctor">Doctora</label>
                             <InputText id="doctor" value={doctor.name} onChange={(e) => onInputChange(e, 'name')} autoFocus className={classNames({ 'p-invalid': submitted && !doctor.name })} />
@@ -332,6 +339,21 @@ const Doctors = () => {
                             {doctor && <span>No tienes los permisos necesarios para realizar esta operacion</span>}
                         </div>
                     </Dialog> */}
+                    {dialogIsVisible && 
+                        <Dialog 
+                        visible={dialogIsVisible}
+                        style={{ width: "450px" }}
+                        header="Detalles de doctor"
+                        footer={<div />}
+                        className="p-fluid"
+                        onHide={hideDialog}
+                        modal>
+                        <div className="modal-content">
+                        <p><b>Nombre:</b>{" "}{dialogContent.name}</p>
+                        <p><b>Tel&eacute;fono:</b>{" "}{dialogContent.phone}</p>
+                        <p><b>Ganancias:</b>{" "}{dialogContent.totaldeganancias}</p>
+                        </div>
+                        </Dialog>}
                 </div>
             </div>
         </div>
