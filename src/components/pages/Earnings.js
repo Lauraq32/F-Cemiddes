@@ -38,7 +38,7 @@ const EarningsPage = () => {
     }, 1000);
   };
   return (
-    <div className="grid clients-table">
+    <div className="grid">
       <div className="col-12">
         <div className="card">
           <h4 className="mb-4">Ganancias</h4>
