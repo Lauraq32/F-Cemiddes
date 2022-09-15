@@ -14,7 +14,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { Checkbox } from "primereact/checkbox";
 import { MultiSelect } from "primereact/multiselect";
-import useDoctors from "../../hooks/useDoctors";
+import { useDoctors }from "../../hooks/useDoctors";
 import ReservationsTable from "../tables/ReservationsTable";
 import axios from "axios";
 import fetchReservations from "../tables/ReservationsTable/index";
