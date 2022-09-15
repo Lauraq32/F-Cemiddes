@@ -12,6 +12,7 @@ import Profile from "./components/pages/Profile";
 import Dashboard from "./components/pages/Dashboard";
 import Treatments from "./components/pages/Treatments";
 import Cuotas from "./components/pages/Cuotas";
+import EarningsPage from "./components/pages/Earnings";
 
 
 
@@ -142,6 +143,7 @@ function App() {
                 { label: 'Productos', icon: 'pi pi-fw pi-shopping-cart', to: '/products' },
                 { label: 'Tratamientos', icon: 'pi pi-fw pi-plus-circle', to: '/treatment' },
                 { label: 'Cuotas', icon: 'pi pi-fw pi-user-plus', to: '/cuotas' },
+                { label: 'Ganancias', icon: 'pi pi-fw pi-money-bill', to: '/earnings' },
             ]
         }
     ];
@@ -217,6 +219,7 @@ function App() {
 							<Route path="/treatment" element={<Treatments />} />
 	
 							<Route path="/cuotas" element={<Cuotas />} />
+							<Route path="/earnings" element={<EarningsPage />} />
 						</Routes>
 					</div>
 

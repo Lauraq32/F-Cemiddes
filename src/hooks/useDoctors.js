@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../service/api'
 
-const useDoctors = () => {
+export const useDoctors = () => {
   const [doctors, setDoctors] = useState([]);
 
 
@@ -22,5 +22,3 @@ const useDoctors = () => {
 
   return [doctors, setDoctors];
 }
-
-export default useDoctors;
