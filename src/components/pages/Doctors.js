@@ -34,7 +34,7 @@ const Doctors = () => {
 
     const [doctors, setDoctors] = useState(null);
     const [doctorDialog, setDoctorDialog] = useState(false);
-    //const [adminDialog, setAdminDialog] = useState(false);
+    const [adminDialog, setAdminDialog] = useState(false);
     const [deleteDoctorDialog, setDeleteDoctorDialog] = useState(false);
     const [deleteDoctorsDialog, setDeleteDoctorsDialog] = useState(false);
     const [doctor, setDoctor] = useState(emptyDoctor);
@@ -71,10 +71,10 @@ const Doctors = () => {
         setDoctorDialog(true);
     }
 
-    // const hideAdminDialog = () => {
-    //     //setSubmitted(false);
-    //     setAdminDialog(false);
-    // }
+    const hideAdminDialog = () => {
+        //setSubmitted(false);
+        setAdminDialog(false);
+    }
 
     const hideDoctorDialog = () => {
         setSubmitted(false);
@@ -129,13 +129,21 @@ const Doctors = () => {
     }
 
     const editDoctor = (doctor) => {
+        if(localStorage.getItem('Rol') !== 'ADMIN'){
+            setAdminDialog(true);
+        } else {
             setDoctor({ ...doctor });
             setDoctorDialog(true);
+        }
     }
 
     const confirmDeleteDoctor = (doctor) => {
+        if(localStorage.getItem('Rol') !== 'ADMIN'){
+            setAdminDialog(true);
+        } else {
             setDoctor(doctor);
             setDeleteDoctorDialog(true);
+        }
     }
 
     const deleteDoctor = () => {
@@ -155,7 +163,10 @@ const Doctors = () => {
     }
 
     const confirmDeleteSelected = () => {
-        setDeleteDoctorsDialog(true);
+        if(localStorage.getItem('Rol') !== 'ADMIN')
+            setAdminDialog(true);
+        else 
+            setDeleteDoctorsDialog(true);
     }
 
     const deleteSelectedDoctors = () => {
@@ -333,12 +344,12 @@ const Doctors = () => {
                             {doctor && <span>¿Está seguro de que desea eliminar los médicos seleccionados?</span>}
                         </div>
                     </Dialog>
-                    {/* <Dialog visible={adminDialog} style={{ width: '450px' }}  modal  onHide={hideAdminDialog}>
+                    <Dialog visible={adminDialog} style={{ width: '450px' }}  modal  onHide={hideAdminDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {doctor && <span>No tienes los permisos necesarios para realizar esta operacion</span>}
+                            {doctor && <span>No tienes los permisos necesarios</span>}
                         </div>
-                    </Dialog> */}
+                    </Dialog>
                     {dialogIsVisible && 
                         <Dialog 
                         visible={dialogIsVisible}

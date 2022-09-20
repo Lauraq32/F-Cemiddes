@@ -159,12 +159,16 @@ const Products = () => {
     }
 
     const editProduct = (cuota) => {
+        if(localStorage.getItem('Rol') !== 'ADMIN'){
+            setAdminDialog(true);
+        } else {
             setCuota({ ...cuota });
             setProductDialog(true);
+        }
     }
 
     const confirmDeleteProduct = (cuota) => {
-        if(localStorage.role !== 'ADMIN'){
+        if(localStorage.getItem('Rol') !== 'ADMIN'){
             setAdminDialog(true);
         } else {
             setCuota(cuota);
@@ -191,7 +195,7 @@ const Products = () => {
     }
 
     const confirmDeleteSelected = () => {
-        if(localStorage.role !== 'ADMIN')
+        if(localStorage.getItem('Rol') !== 'ADMIN')
             setAdminDialog(true);
         else 
             setDeleteProductsDialog(true);
@@ -388,7 +392,7 @@ const Products = () => {
                     <Dialog visible={adminDialog} style={{ width: '450px' }}  modal  onHide={hideAdminDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {cuota && <span>No tienes los permisos necesarios para realizar esta operacion</span>}
+                            {cuota && <span>No tienes los permisos necesarios</span>}
                         </div>
                     </Dialog>
                     {dialogIsVisible && 

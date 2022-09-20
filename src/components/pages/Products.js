@@ -24,7 +24,7 @@ const Products = () => {
 
     const [products, setProducts] = useState(null);
     const [productDialog, setProductDialog] = useState(false);
-    //const [adminDialog, setAdminDialog] = useState(false);
+    const [adminDialog, setAdminDialog] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
     const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
     const [product, setProduct] = useState(emptyProduct);
@@ -59,10 +59,10 @@ const Products = () => {
         setProductDialog(true);
     }
 
-    // const hideAdminDialog = () => {
-    //     //setSubmitted(false);
-    //     setAdminDialog(false);
-    // }
+    const hideAdminDialog = () => {
+        //setSubmitted(false);
+        setAdminDialog(false);
+    }
 
     const hideProductDialog = () => {
         setSubmitted(false);
@@ -110,13 +110,21 @@ const Products = () => {
     }
 
     const editProduct = (product) => {
+        if(localStorage.getItem('Rol') !== 'ADMIN'){
+            setAdminDialog(true);
+        } else {
             setProduct({ ...product });
             setProductDialog(true);
+        }
     }
 
     const confirmDeleteProduct = (product) => {
+        if(localStorage.getItem('Rol') !== 'ADMIN'){
+            setAdminDialog(true);
+        } else {
             setProduct(product);
             setDeleteProductDialog(true);
+        }
     }
 
     const deleteProduct = () => {
@@ -138,6 +146,9 @@ const Products = () => {
     }
 
     const confirmDeleteSelected = () => {
+        if(localStorage.getItem('Rol') !== 'ADMIN'){
+            setAdminDialog(true);
+        } else 
         setDeleteProductsDialog(true);
     }
 
@@ -309,12 +320,12 @@ const Products = () => {
                             {product && <span>¿Está seguro de que desea eliminar los productos seleccionados?</span>}
                         </div>
                     </Dialog>
-                    {/* <Dialog visible={adminDialog} style={{ width: '450px' }}  modal  onHide={hideAdminDialog}>
+                    <Dialog visible={adminDialog} style={{ width: '450px' }}  modal  onHide={hideAdminDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
-                            {product && <span>No tienes los permisos necesarios para realizar esta operacion</span>}
+                            {product && <span>No tienes los permisos necesarios</span>}
                         </div>
-                    </Dialog> */}
+                    </Dialog>
                     {dialogIsVisible && 
                         <Dialog 
                         visible={dialogIsVisible}

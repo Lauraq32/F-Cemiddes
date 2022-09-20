@@ -10,13 +10,13 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { NavLink } from 'react-router-dom';
-import {Calendar} from 'primereact/calendar';
+import { Calendar } from 'primereact/calendar';
 import axios from 'axios';
 import headers from '../service/token';
 import { useDialog } from "../../hooks/useDialog";
 
 const formatDate = (value) => {
-    return new Date (value).toLocaleDateString('en-US', {
+    return new Date(value).toLocaleDateString('en-US', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'
@@ -28,12 +28,13 @@ const Clients = () => {
         _id: null,
         name: '',
         phone: '',
-        email:'',
+        email: '',
         status: true
     };
 
     const [clients, setClients] = useState(null);
     const [clientDialog, setClientDialog] = useState(false);
+    const [adminDialog, setAdminDialog] = useState(false);
     const [deleteClientDialog, setDeleteClientDialog] = useState(false);
     const [deleteClientsDialog, setDeleteClientsDialog] = useState(false);
     const [client, setClient] = useState(emptyClient);
@@ -52,12 +53,12 @@ const Clients = () => {
     }, []);
 
     const getAllClients = () => {
-        axios.get(`${process.env.REACT_APP_API_URL}/api/patients`, {headers})
-        .then((response) => {
-            const allClients = response.data.patients;
-            setClients(allClients);
-        })
-        .catch(error => console.error('Error while getting clients:',error));
+        axios.get(`${process.env.REACT_APP_API_URL}/api/patients`, { headers })
+            .then((response) => {
+                const allClients = response.data.patients;
+                setClients(allClients);
+            })
+            .catch(error => console.error('Error while getting clients:', error));
     }
 
 
@@ -71,6 +72,11 @@ const Clients = () => {
     const hideClientDialog = () => {
         setSubmitted(false);
         setClientDialog(false);
+    }
+
+    const hideAdminDialog = () => {
+        //setSubmitted(false);
+        setAdminDialog(false);
     }
 
     const hideDeleteClientDialog = () => {
@@ -89,21 +95,21 @@ const Clients = () => {
             let _clients = [...clients];
             let _client = { ...client };
             if (client._id) {
-                axios.put(`${process.env.REACT_APP_API_URL}/api/patients/` + _client._id, _client , {headers}, )
-                .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
-                    getAllClients();
+                axios.put(`${process.env.REACT_APP_API_URL}/api/patients/` + _client._id, _client, { headers },)
+                    .then(response => {
+                        toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
+                        getAllClients();
 
-                })
-                .catch(error => console.error('Error while adding client:',error));
+                    })
+                    .catch(error => console.error('Error while adding client:', error));
             }
             else {
-                axios.post(`${process.env.REACT_APP_API_URL}/api/patients`, _client, {headers})
-                .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
-                    getAllClients();
-                })
-                .catch(error => console.error('Error while posting client',error));
+                axios.post(`${process.env.REACT_APP_API_URL}/api/patients`, _client, { headers })
+                    .then(response => {
+                        toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
+                        getAllClients();
+                    })
+                    .catch(error => console.error('Error while posting client', error));
             }
 
             setClients(_clients);
@@ -113,13 +119,21 @@ const Clients = () => {
     }
 
     const editClient = (client) => {
-        setClient({ ...client });
-        setClientDialog(true);
+        if (localStorage.getItem('Rol') !== 'ADMIN') {
+            setAdminDialog(true);
+        } else {
+            setClient({ ...client });
+            setClientDialog(true);
+        }
     }
 
     const confirmDeleteClient = (client) => {
-        setClient(client);
-        setDeleteClientDialog(true);
+        if(localStorage.getItem('Rol') !== 'ADMIN'){
+            setAdminDialog(true);
+        } else {
+            setClient(client);
+            setDeleteClientDialog(true);
+        }
     }
 
     const deleteClient = () => {
@@ -127,11 +141,11 @@ const Clients = () => {
         setClients(_clients);
         setDeleteClientDialog(false);
         setClient(emptyClient);
-        axios.delete(`${process.env.REACT_APP_API_URL}/api/patients/` + client._id, {headers})
-        .then(response => {
-            toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
-        })
-        .catch(error => console.error('Error in editProduct:',error));
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/patients/` + client._id, { headers })
+            .then(response => {
+                toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
+            })
+            .catch(error => console.error('Error in editProduct:', error));
     }
 
     const exportCSV = () => {
@@ -139,7 +153,10 @@ const Clients = () => {
     }
 
     const confirmDeleteSelected = () => {
-        setDeleteClientsDialog(true);
+        if(localStorage.getItem('Rol') !== 'ADMIN'){
+            setAdminDialog(true);
+        } else 
+            setDeleteClientsDialog(true);
     }
 
     const deleteSelectedClients = () => {
@@ -211,7 +228,7 @@ const Clients = () => {
 
     const statusBodyTemplate = (rowData) => {
         let activStatus = 'Inactivo';
-        if(rowData.status)
+        if (rowData.status)
             activStatus = 'Activo';
         return (
             <>
@@ -229,7 +246,7 @@ const Clients = () => {
             </>
         );
     }
-    
+
     const visitsBodyTemplate = (rowData) => {
         return (
             <>
@@ -296,12 +313,12 @@ const Clients = () => {
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         currentPageReportTemplate="Mostrando  {first} a {last} de {totalRecords} clientes"
                         globalFilter={globalFilter} emptyMessage="No se encontraron clientes." header={header} responsiveLayout="scroll">
-                        <Column selectionMode="multiple" headerStyle={{ width: '3rem'}}></Column>
+                        <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
                         <Column field="name" header="Paciente" sortable body={nameBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="phone" header="Telefono" sortable body={phoneBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="email" header="Correo Electronico" sortable body={emailBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="status" header="Estatus" sortable body={statusBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
-                        
+
                         {<Column field="visitas" header="Visitas" sortable body={visitsBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>}
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
@@ -316,7 +333,7 @@ const Clients = () => {
                             <label className="mb-3">Telefono</label>
                             <InputText id="phone" value={client.phone} onChange={(e) => onInputChange(e, 'phone')} required className={classNames({ 'p-invalid': submitted && !client.phone })} />
                         </div>
-                        
+
                         <div className="field">
                             <label htmlFor="email">Email</label>
                             <InputText id="email" value={client.email} onChange={(e) => onInputChange(e, 'email')} required className={classNames({ 'p-invalid': submitted && !client.email })} />
@@ -343,21 +360,27 @@ const Clients = () => {
                             {client && <span>¿Está seguro de que desea eliminar los clientes seleccionados?</span>}
                         </div>
                     </Dialog>
-                    {dialogIsVisible && 
-                        <Dialog 
-                        visible={dialogIsVisible}
-                        style={{ width: "450px" }}
-                        header="Detalles de cliente"
-                        footer={<div />}
-                        className="p-fluid"
-                        onHide={hideDialog}
-                        modal>
-                        <div className="modal-content">
-                        <p><b>Paciente:</b>{" "}{dialogContent.name}</p>
-                        <p><b>Tel&eacute;fono:</b>{" "}{dialogContent.phone}</p>
-                        <p><b>Correo electr&oacute;nico:</b>{" "}{dialogContent.email}</p>
-                        <p><b>Visitas:</b>{" "}{dialogContent.visitas}</p>
+                    <Dialog visible={adminDialog} style={{ width: '450px' }} modal onHide={hideAdminDialog}>
+                        <div className="flex align-items-center justify-content-center">
+                            <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
+                            {client && <span>No tienes los permisos necesarios</span>}
                         </div>
+                    </Dialog>
+                    {dialogIsVisible &&
+                        <Dialog
+                            visible={dialogIsVisible}
+                            style={{ width: "450px" }}
+                            header="Detalles de cliente"
+                            footer={<div />}
+                            className="p-fluid"
+                            onHide={hideDialog}
+                            modal>
+                            <div className="modal-content">
+                                <p><b>Paciente:</b>{" "}{dialogContent.name}</p>
+                                <p><b>Tel&eacute;fono:</b>{" "}{dialogContent.phone}</p>
+                                <p><b>Correo electr&oacute;nico:</b>{" "}{dialogContent.email}</p>
+                                <p><b>Visitas:</b>{" "}{dialogContent.visitas}</p>
+                            </div>
                         </Dialog>}
                 </div>
             </div>
