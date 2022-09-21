@@ -8,7 +8,7 @@ import headers from '../service/token';
 
 const Profile = () => {
     let emptyUser = {
-        uid: null,
+        _id: null,
         name: '',
         lastname: '',
         rol: '',
@@ -44,11 +44,12 @@ const Profile = () => {
 
         setUser(_user);
     }
+
     const saveUser = () => {
         let _user = {...user}
 
-        if (user.uid) {
-            axios.put(`${process.env.REACT_APP_API_URL}/api/users/` + _user.uid, _user , {headers}, )
+        if (user._id) {
+            axios.put(`${process.env.REACT_APP_API_URL}/api/users/` + _user._id, _user , {headers}, )
             .then(response => {
                 toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                 getUser();

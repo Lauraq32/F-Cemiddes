@@ -1,6 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
+import axios from "axios";
 import classNames from "classnames";
 
 import { useDoctors } from "../../hooks/useDoctors";
@@ -8,6 +9,7 @@ import { useDoctors } from "../../hooks/useDoctors";
 const EarningsPage = () => {
   const [doctors] = useDoctors();
   const [submitted, setSubmitted] = useState(false);
+  const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [earnings, setEarnings] = useState(null);
   // form fields
@@ -20,29 +22,53 @@ const EarningsPage = () => {
     [doctors]
   );
 
-  const submit = event => {
-    event.preventDefault();
-    setSubmitted(true);
+  useEffect(() => {
+    getEarningsByDate();
+  }, [])
 
-    if (!doctor || !startDate || !endingDate) {
-      return;
+  // const submit = event => {
+  //   event.preventDefault();
+  //   setSubmitted(true);
+
+  //   if (!doctor || !startDate || !endingDate) {
+  //     return;
+  //   }
+
+  //   setLoading(true);
+  //   // console.log(doctor);
+  //   // console.log(startDate);
+  //   // console.log(endingDate);
+  //   setTimeout(() => {
+  //     setEarnings({ percent: 20 });
+  //     setLoading(false);
+  //   }, 1000);
+  // };
+
+  async function getEarningsByDate() {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/api/reservations/earnings/`;
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const options = {
+        headers: {
+          Authorization: token,
+        },
+      };
+      const res = await axios.get(url, options);
+
+      setReservations(res.data.earnings);
+    } catch (error) {
+      console.error(error);
     }
+  }
 
-    setLoading(true);
-    // console.log(doctor);
-    // console.log(startDate);
-    // console.log(endingDate);
-    setTimeout(() => {
-      setEarnings({ percent: 20 });
-      setLoading(false);
-    }, 1000);
-  };
   return (
     <div className="grid clients-table">
       <div className="col-12">
         <div className="card">
           <h4 className="mb-4">Ganancias</h4>
-          <form onSubmit={submit} className="formgroup-inline d-flex">
+          <form onSubmit={getEarningsByDate} className="formgroup-inline d-flex">
             <div className="field">
               <label htmlFor="doctor" className="p-sr-only">
                 Doctor/ra
@@ -108,7 +134,7 @@ const EarningsPage = () => {
                 ></i>
               </p>
             )}
-            {!loading && earnings && <p>Porcentaje: {earnings.percent}</p>}
+            {!loading && earnings && <p>Ganancias: {reservations.earnings}</p>}
           </div>
         </div>
       </div>
