@@ -3,7 +3,7 @@ import {InputText} from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import axios from 'axios';
-import headers from '../service/token';
+import headers, { getHeaders } from '../service/token';
 
 
 const Profile = () => {
@@ -11,7 +11,7 @@ const Profile = () => {
         _id: null,
         name: '',
         lastname: '',
-        rol: '',
+        role: '',
         email: '',
         password: ''
     };
@@ -28,7 +28,7 @@ const Profile = () => {
     
     const getUser = () => {
         
-        axios.get(`${process.env.REACT_APP_API_URL}/api/users/` + userID, {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/users/` + userID, {headers: getHeaders()})
         .then((response) => {
             const userData = response.data;
             setUser(userData);
@@ -49,7 +49,7 @@ const Profile = () => {
         let _user = {...user}
 
         if (user._id) {
-            axios.put(`${process.env.REACT_APP_API_URL}/api/users/` + _user._id, _user , {headers}, )
+            axios.put(`${process.env.REACT_APP_API_URL}/api/users/` + _user._id, _user , {headers: getHeaders()}, )
             .then(response => {
                 toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                 getUser();
@@ -81,7 +81,7 @@ const Profile = () => {
 
                     <div className="field">
                         <label htmlFor="rol">Role</label>
-                        <InputText id="rol" type="text" value={user.rol}  onChange={(e) => onInputChange(e, 'rol')} />
+                        <InputText id="rol" type="text" value={user.role}  onChange={(e) => onInputChange(e, 'role')} />
                     </div>
 
                     <div className="field">

@@ -50,6 +50,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
     percent: 0,
     patientTreatmentId: "",
     date: formatDate(Date.now()),
+    status: 'pendiente',
   };
   const toast = useRef(null);
   const dt = useRef(null);
@@ -283,11 +284,11 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
             icon="pi pi-plus"
             className="p-button-success mr-2"
           />
-          <Button
+          {/* <Button
             label="Borrar"
             icon="pi pi-trash"
             className="p-button-danger"
-          />
+          /> */}
         </div>
       </React.Fragment>
     );
@@ -336,6 +337,15 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
       </React.Fragment>
     );
   };
+
+  const statusBodyTemplate = (rowData) => {
+    return (
+        <>
+            <span className="p-column-title">Status</span>
+            {rowData.status}
+        </>
+    );
+}
 
   const amountPayableBodyTemplate = (rowData) => {
     return (
@@ -476,11 +486,11 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
           className="p-button-rounded p-button-success"
           onClick={() => editReservation(rowData)}
         />
-        <Button
+        {/* <Button
           icon="pi pi-trash"
           className="p-button-rounded p-button-warning"
           onClick={() => deleteReservation(rowData)}
-        />
+        /> */}
       </div>
     );
   };
@@ -559,6 +569,12 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
               body={percentBodyTemplate}
               headerStyle={{ width: "14%", minWidth: "10rem" }}
             ></Column>
+            <Column
+              field="status"
+              header="Estatus de la reserva"
+              headerStyle={headerStyle}
+              sortable
+            />
             <Column body={actionButtons} />
           </DataTable>
 
@@ -739,6 +755,13 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
                 )}
               </div>
             </div>
+            <Column
+              field="status"
+              header="Estado de la reserva"
+              body={statusBodyTemplate}
+              headerStyle={headerStyle}
+              sortable
+            />
             <Dialog
               visible={deleteReservationDialog}
               style={{ width: "450px" }}

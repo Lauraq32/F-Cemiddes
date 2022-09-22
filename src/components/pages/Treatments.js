@@ -10,7 +10,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
-import headers from '../service/token';
+import headers, { getHeaders } from '../service/token';
 import { NavLink } from 'react-router-dom';
 import { useDialog } from "../../hooks/useDialog";
 
@@ -39,7 +39,7 @@ const Treatments = () => {
     }, []);
     
     const getAllProducts = () => {
-        axios.get(`${process.env.REACT_APP_API_URL}/api/treatments`, {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/treatments`, {headers: getHeaders()})
         .then((response) => {
             const allProducts = response.data.treatments;
             setProducts(allProducts);
@@ -82,7 +82,7 @@ const Treatments = () => {
             let _treatment = { ...treatment };
 
             if (treatment._id) {
-                axios.put(`${process.env.REACT_APP_API_URL}/api/treatments/` + _treatment._id, _treatment , {headers}, )
+                axios.put(`${process.env.REACT_APP_API_URL}/api/treatments/` + _treatment._id, _treatment , {headers: getHeaders()}, )
                 .then(response => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllProducts();
@@ -91,7 +91,7 @@ const Treatments = () => {
                 .catch(error => console.error('Error in editProduct:',error));
             }
             else {   
-                axios.post(`${process.env.REACT_APP_API_URL}/api/treatments`, _treatment, {headers})
+                axios.post(`${process.env.REACT_APP_API_URL}/api/treatments`, _treatment, {headers: getHeaders()})
                 .then(response => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllProducts();
@@ -107,7 +107,7 @@ const Treatments = () => {
     }
 
     const editProduct = (treatment) => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else {
             setProduct({ ...treatment });
@@ -116,7 +116,7 @@ const Treatments = () => {
     }
 
     const confirmDeleteProduct = (treatment) => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else {
             setProduct(treatment);
@@ -130,7 +130,7 @@ const Treatments = () => {
         setDeleteProductDialog(false);
         setProduct(emptyTreatment);
 
-        axios.delete(`${process.env.REACT_APP_API_URL}/api/treatments/` + treatment._id, {headers})
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/treatments/` + treatment._id, {headers: getHeaders()})
         .then(response => {
             toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
         })
@@ -143,7 +143,7 @@ const Treatments = () => {
     }
 
     const confirmDeleteSelected = () => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else 
             setDeleteProductsDialog(true);
@@ -183,7 +183,7 @@ const Treatments = () => {
             <React.Fragment>
                 <div className="my-2">
                     <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                    <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} />
+                    {/* <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} /> */}
                 </div>
             </React.Fragment>
         )
@@ -228,7 +228,7 @@ const Treatments = () => {
             <div className="datatable-actions">
                 <Button icon="pi pi-eye" className="p-button-rounded p-button-info" onClick={() => showTreatmentDetailsDialog(rowData)} />
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" onClick={() => editProduct(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteProduct(rowData)} />
+                {/* <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteProduct(rowData)} /> */}
             </div>
         );
     }

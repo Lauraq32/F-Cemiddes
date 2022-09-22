@@ -19,7 +19,7 @@ const Login = () => {
 			const res = await axios.post(url, data);
 			localStorage.setItem("token", res.data.token);
 			localStorage.setItem("uid", res.data.user.uid);
-			localStorage.setItem("Rol", res.data.user.rol);
+			localStorage.setItem("role", res.data.user.role);
 			var now = new Date().getTime();
 			localStorage.setItem('setupTime', now)
 			//console.log(res.data);

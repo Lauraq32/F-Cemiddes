@@ -10,7 +10,7 @@ import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import {Calendar} from 'primereact/calendar';
-import headers from '../service/token';
+import headers, { getHeaders } from '../service/token';
 import axios from 'axios';
 import { useDialog } from "../../hooks/useDialog";
 
@@ -52,7 +52,7 @@ const Doctors = () => {
     }, []);
 
     const getAllDoctors = () => {
-        axios.get(`${process.env.REACT_APP_API_URL}/api/doctors`, {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/doctors`, {headers: getHeaders()})
         .then((response) => {
             const allDoctors = response.data.doctors;
             setDoctors(allDoctors);
@@ -103,7 +103,7 @@ const Doctors = () => {
             let _doctors = [...doctors];
             let _doctor = { ...doctor };
             if (doctor._id) {
-                axios.put(`${process.env.REACT_APP_API_URL}/api/doctors/` + doctor._id, _doctor ,{headers})
+                axios.put(`${process.env.REACT_APP_API_URL}/api/doctors/` + doctor._id, _doctor ,{headers: getHeaders()})
                 .then(response => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllDoctors();                  
@@ -111,7 +111,7 @@ const Doctors = () => {
                 .catch(error => console.error('Error in editDoctor:',error));
             }
             else {
-                axios.post(`${process.env.REACT_APP_API_URL}/api/doctors`, _doctor, {headers})
+                axios.post(`${process.env.REACT_APP_API_URL}/api/doctors`, _doctor, {headers: getHeaders()})
                 .then(response => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllDoctors();
@@ -129,7 +129,7 @@ const Doctors = () => {
     }
 
     const editDoctor = (doctor) => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else {
             setDoctor({ ...doctor });
@@ -138,7 +138,7 @@ const Doctors = () => {
     }
 
     const confirmDeleteDoctor = (doctor) => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else {
             setDoctor(doctor);
@@ -151,7 +151,7 @@ const Doctors = () => {
         setDoctors(_doctors);
         setDeleteDoctorDialog(false);
         setDoctor(emptyDoctor);
-        axios.delete(`${process.env.REACT_APP_API_URL}/api/doctors/` + doctor._id, {headers})
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/doctors/` + doctor._id, {headers: getHeaders()})
         .then(response => {
             toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
         })
@@ -163,7 +163,7 @@ const Doctors = () => {
     }
 
     const confirmDeleteSelected = () => {
-        if(localStorage.getItem('Rol') !== 'ADMIN')
+        if(localStorage.getItem('role') !== 'ADMIN')
             setAdminDialog(true);
         else 
             setDeleteDoctorsDialog(true);
@@ -190,7 +190,7 @@ const Doctors = () => {
             <React.Fragment>
                 <div className="my-2">
                     <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                    <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedDoctors || !selectedDoctors.length} />
+                    {/* <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedDoctors || !selectedDoctors.length} /> */}
                 </div>
             </React.Fragment>
         )
@@ -250,7 +250,7 @@ const Doctors = () => {
             <div className="datatable-actions">
                 <Button icon="pi pi-eye" className="p-button-rounded p-button-info" onClick={() => showSelectedDoctorDialog(rowData)} />
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" onClick={() => editDoctor(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteDoctor(rowData)} />
+                {/* <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteDoctor(rowData)} /> */}
             </div>
         );
     }

@@ -10,7 +10,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
-import headers from '../service/token';
+import headers, { getHeaders } from '../service/token';
 import { NavLink } from 'react-router-dom';
 import { useDialog } from "../../hooks/useDialog";
 
@@ -40,7 +40,7 @@ const Products = () => {
     }, []);
     
     const getAllProducts = () => {
-        axios.get(`${process.env.REACT_APP_API_URL}/api/products`, {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/products`, {headers: getHeaders()})
         .then((response) => {
             const allProducts = response.data.products;
             console.log(allProducts)
@@ -85,7 +85,7 @@ const Products = () => {
             let _product = { ...product };
 
             if (product._id) {
-                axios.put(`${process.env.REACT_APP_API_URL}/api/products/` + _product._id, _product , {headers}, )
+                axios.put(`${process.env.REACT_APP_API_URL}/api/products/` + _product._id, _product , {headers: getHeaders()}, )
                 .then(response => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllProducts();
@@ -94,7 +94,7 @@ const Products = () => {
                 .catch(error => console.error('Error in editProduct:',error));
             }
             else {   
-                axios.post(`${process.env.REACT_APP_API_URL}/api/products`, _product, {headers})
+                axios.post(`${process.env.REACT_APP_API_URL}/api/products`, _product, {headers: getHeaders()})
                 .then(response => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllProducts();
@@ -110,7 +110,7 @@ const Products = () => {
     }
 
     const editProduct = (product) => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else {
             setProduct({ ...product });
@@ -119,7 +119,7 @@ const Products = () => {
     }
 
     const confirmDeleteProduct = (product) => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else {
             setProduct(product);
@@ -133,7 +133,7 @@ const Products = () => {
         setDeleteProductDialog(false);
         setProduct(emptyProduct);
 
-        axios.delete(`${process.env.REACT_APP_API_URL}/api/products/` + product._id, {headers})
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/products/` + product._id, {headers: getHeaders()})
         .then(response => {
             toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
         })
@@ -146,7 +146,7 @@ const Products = () => {
     }
 
     const confirmDeleteSelected = () => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else 
         setDeleteProductsDialog(true);
@@ -182,7 +182,7 @@ const Products = () => {
             <React.Fragment>
                 <div className="my-2">
                     <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                    <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} />
+                    {/* <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedProducts || !selectedProducts.length} /> */}
                 </div>
             </React.Fragment>
         )
@@ -230,7 +230,7 @@ const Products = () => {
             <div className="datatable-actions">
                 <Button icon="pi pi-eye" className="p-button-rounded p-button-info" onClick={() => showSelectedProductDialog(rowData)} />
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" onClick={() => editProduct(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteProduct(rowData)} />
+                {/* <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteProduct(rowData)} /> */}
             </div>
         );
     }

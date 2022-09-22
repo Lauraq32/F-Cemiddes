@@ -12,7 +12,7 @@ import { InputText } from 'primereact/inputtext';
 import { NavLink } from 'react-router-dom';
 import { Calendar } from 'primereact/calendar';
 import axios from 'axios';
-import headers from '../service/token';
+import headers, { getHeaders } from '../service/token';
 import { useDialog } from "../../hooks/useDialog";
 
 const formatDate = (value) => {
@@ -29,7 +29,7 @@ const Clients = () => {
         name: '',
         phone: '',
         email: '',
-        status: true
+        status: 'activo'
     };
 
     const [clients, setClients] = useState(null);
@@ -53,7 +53,7 @@ const Clients = () => {
     }, []);
 
     const getAllClients = () => {
-        axios.get(`${process.env.REACT_APP_API_URL}/api/patients`, { headers })
+        axios.get(`${process.env.REACT_APP_API_URL}/api/patients`, {headers: getHeaders()})
             .then((response) => {
                 const allClients = response.data.patients;
                 setClients(allClients);
@@ -95,7 +95,7 @@ const Clients = () => {
             let _clients = [...clients];
             let _client = { ...client };
             if (client._id) {
-                axios.put(`${process.env.REACT_APP_API_URL}/api/patients/` + _client._id, _client, { headers },)
+                axios.put(`${process.env.REACT_APP_API_URL}/api/patients/` + _client._id, _client, {headers: getHeaders()},)
                     .then(response => {
                         toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                         getAllClients();
@@ -104,7 +104,7 @@ const Clients = () => {
                     .catch(error => console.error('Error while adding client:', error));
             }
             else {
-                axios.post(`${process.env.REACT_APP_API_URL}/api/patients`, _client, { headers })
+                axios.post(`${process.env.REACT_APP_API_URL}/api/patients`, _client, {headers: getHeaders()})
                     .then(response => {
                         toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                         getAllClients();
@@ -119,7 +119,7 @@ const Clients = () => {
     }
 
     const editClient = (client) => {
-        if (localStorage.getItem('Rol') !== 'ADMIN') {
+        if (localStorage.getItem('role') !== 'ADMIN') {
             setAdminDialog(true);
         } else {
             setClient({ ...client });
@@ -128,7 +128,7 @@ const Clients = () => {
     }
 
     const confirmDeleteClient = (client) => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else {
             setClient(client);
@@ -141,7 +141,7 @@ const Clients = () => {
         setClients(_clients);
         setDeleteClientDialog(false);
         setClient(emptyClient);
-        axios.delete(`${process.env.REACT_APP_API_URL}/api/patients/` + client._id, { headers })
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/patients/` + client._id, {headers: getHeaders()})
             .then(response => {
                 toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
             })
@@ -153,7 +153,7 @@ const Clients = () => {
     }
 
     const confirmDeleteSelected = () => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else 
             setDeleteClientsDialog(true);
@@ -196,7 +196,7 @@ const Clients = () => {
             <React.Fragment>
                 <div className="my-2">
                     <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                    <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedClients || !selectedClients.length} />
+                    {/* <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedClients || !selectedClients.length} /> */}
                 </div>
             </React.Fragment>
         )
@@ -227,13 +227,10 @@ const Clients = () => {
     }
 
     const statusBodyTemplate = (rowData) => {
-        let activStatus = 'Inactivo';
-        if (rowData.status)
-            activStatus = 'Activo';
         return (
             <>
                 <span className="p-column-title">Status</span>
-                {activStatus}
+                {rowData.status}
             </>
         );
     }
@@ -267,7 +264,7 @@ const Clients = () => {
             <div className="datatable-actions">
                 <Button icon="pi pi-eye" className="p-button-rounded p-button-info" onClick={() => showSelectedClientDialog(rowData)} />
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" onClick={() => editClient(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteClient(rowData)} />
+                {/* <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteClient(rowData)} /> */}
             </div>
         );
     }

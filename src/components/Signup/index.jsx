@@ -24,6 +24,8 @@ const Signup = () => {
 			const url = `${process.env.REACT_APP_API_URL}/api/auth/signup`;
 			const res  = await axios.post(url, data);
 			localStorage.setItem("token", res.data.token);
+			localStorage.setItem("uid", res.data.user.uid);
+			localStorage.setItem("role", res.data.user.role);
 			navigate("/doctors");
 		} catch (error) {
 			if (
@@ -73,9 +75,9 @@ const Signup = () => {
 						<input
 							type="text"
 							placeholder="rol"
-							name="rol"
+							name="role"
 							onChange={handleChange}
-							value={data.rol}
+							value={data.role}
 							required
 							className={styles.input}
 						/>

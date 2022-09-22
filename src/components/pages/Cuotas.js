@@ -13,7 +13,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { useDialog } from "../../hooks/useDialog";
 
 import axios from 'axios';
-import headers from '../service/token';
+import headers, { getHeaders } from '../service/token';
 
 const Products = () => {
     let emptyCuotas = {
@@ -52,7 +52,7 @@ const Products = () => {
     }, []);
     
     const getAllCuotas = () => {
-        axios.get(`${process.env.REACT_APP_API_URL}/api/patients/treatments`, {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/patients/treatments`, {headers: getHeaders()})
         .then((response) => {
             const allProducts = response.data; //comment
             setCuotas(allProducts);
@@ -61,7 +61,7 @@ const Products = () => {
     }
 
     const getAllClients = () => {
-        axios.get(`${process.env.REACT_APP_API_URL}/api/patients`, {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/patients`, {headers: getHeaders()})
         .then((response) => {
             const allClients = response.data.patients;
             setClients(allClients);
@@ -71,7 +71,7 @@ const Products = () => {
     }
 
     const getAllTreatments = () => {
-        axios.get(`${process.env.REACT_APP_API_URL}/api/treatments`, {headers})
+        axios.get(`${process.env.REACT_APP_API_URL}/api/treatments`, {headers: getHeaders()})
         .then((response) => {
             const allTreatments = response.data.treatments;
             setTreatments(allTreatments);
@@ -134,7 +134,7 @@ const Products = () => {
             console.log("here", _cuota)
 
             if (cuota._id) {
-                axios.put(`${process.env.REACT_APP_API_URL}/api/patients/treatments/` + _cuota._id, _cuota , {headers}, )
+                axios.put(`${process.env.REACT_APP_API_URL}/api/patients/treatments/` + _cuota._id, _cuota , {headers: getHeaders()}, )
                 .then(response => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllCuotas();
@@ -143,7 +143,7 @@ const Products = () => {
                 .catch(error => console.error('Error in editProduct:',error));
             }
             else {   
-                axios.post(`${process.env.REACT_APP_API_URL}/api/patients/treatments`, _cuota, {headers})
+                axios.post(`${process.env.REACT_APP_API_URL}/api/patients/treatments`, _cuota, {headers: getHeaders()})
                 .then(response => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllCuotas();
@@ -159,7 +159,7 @@ const Products = () => {
     }
 
     const editProduct = (cuota) => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else {
             setCuota({ ...cuota });
@@ -168,7 +168,7 @@ const Products = () => {
     }
 
     const confirmDeleteProduct = (cuota) => {
-        if(localStorage.getItem('Rol') !== 'ADMIN'){
+        if(localStorage.getItem('role') !== 'ADMIN'){
             setAdminDialog(true);
         } else {
             setCuota(cuota);
@@ -182,7 +182,7 @@ const Products = () => {
         setDeleteProductDialog(false);
         setCuota(emptyCuotas);
 
-        axios.delete(`${process.env.REACT_APP_API_URL}/api/patients/treatments/` + cuota._id, {headers})
+        axios.delete(`${process.env.REACT_APP_API_URL}/api/patients/treatments/` + cuota._id, {headers: getHeaders()})
         .then(response => {
             toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Borrado Exitosamente', life: 3000 });
         })
@@ -195,7 +195,7 @@ const Products = () => {
     }
 
     const confirmDeleteSelected = () => {
-        if(localStorage.getItem('Rol') !== 'ADMIN')
+        if(localStorage.getItem('role') !== 'ADMIN')
             setAdminDialog(true);
         else 
             setDeleteProductsDialog(true);
@@ -235,7 +235,7 @@ const Products = () => {
             <React.Fragment>
                 <div className="my-2">
                     <Button label="Nuevo" icon="pi pi-plus" className="p-button-success mr-2" onClick={openNew} />
-                    <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedCuotas || !selectedCuotas.length} />
+                    {/* <Button label="Borrar" icon="pi pi-trash" className="p-button-danger" onClick={confirmDeleteSelected} disabled={!selectedCuotas || !selectedCuotas.length} /> */}
                 </div>
             </React.Fragment>
         )
@@ -303,7 +303,7 @@ const Products = () => {
             <div className="datatable-actions">
                 <Button icon="pi pi-eye" className="p-button-rounded p-button-info" onClick={() => showDueDetailsDialog(rowData)} />
                 <Button icon="pi pi-pencil" className="p-button-rounded p-button-success" onClick={() => editProduct(rowData)} />
-                <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteProduct(rowData)} />
+                {/* <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteProduct(rowData)} /> */}
             </div>
         );
     }
@@ -356,7 +356,7 @@ const Products = () => {
                         <Column field="total" header="Total del tratamiento" body={totalPriceBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="amountPayable" header="Monto Pagado" body={payableBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="deuda" header="Deuda" body={deudaBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
-                        
+                        <Column field="status"header="Estado de la reserva" headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
