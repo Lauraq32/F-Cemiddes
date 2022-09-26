@@ -19,7 +19,8 @@ const Products = () => {
         _id: null,
         name: '',
         amount: 0,
-        price: 0
+        price: 0,
+        status: ''
     };
 
     const [products, setProducts] = useState(null);
@@ -221,6 +222,15 @@ const Products = () => {
         );
     };
 
+    const statusBodyTemplate = (rowData) => {
+        return (
+          <>
+            <span className="p-column-title">Status</span>
+            {rowData.status}
+          </>
+        );
+    }
+
     const showSelectedProductDialog = product => {
         showDialog(product);
     };
@@ -280,6 +290,7 @@ const Products = () => {
                         <Column field="name" header="Productos" sortable body={nameBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="amount" header="Cantidad" body={quantityBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="price" header="Precio" body={priceBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
+                        <Column field="status"header="Estado del pago" body={statusBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 

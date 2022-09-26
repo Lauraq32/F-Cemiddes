@@ -340,12 +340,12 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
 
   const statusBodyTemplate = (rowData) => {
     return (
-        <>
-            <span className="p-column-title">Status</span>
-            {rowData.status}
-        </>
+      <>
+        <span className="p-column-title">Status</span>
+        {rowData.status}
+      </>
     );
-}
+  }
 
   const amountPayableBodyTemplate = (rowData) => {
     return (
@@ -360,9 +360,9 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
     patients === null
       ? "Loading..."
       : patients.map((patient) => ({
-          patient: patient.name,
-          id: patient._id,
-        }));
+        patient: patient.name,
+        id: patient._id,
+      }));
 
   const showDetails = (reservationData) => {
     onShowDetails(reservationData);
@@ -372,9 +372,9 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
     patientTreatments === null
       ? "Loading..."
       : patientTreatments.map((patientTreatment) => ({
-          id: patientTreatment._id,
-          name: patientTreatment.treatment.name,
-        }));
+        id: patientTreatment._id,
+        name: patientTreatment.treatment.name,
+      }));
 
   const changeDropdownPatient = (e) => {
     const patientId = e.value ? e.value.id : "";
@@ -409,17 +409,17 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
     products === null
       ? "Loading..."
       : products.map((products) => ({
-          id: products._id,
-          product: products.name,
-        }));
+        id: products._id,
+        product: products.name,
+      }));
 
   const dropdownValues =
     doctors === null
       ? "Loading..."
       : doctors.map((doctor) => ({
-          doctor: doctor.name,
-          id: doctor._id,
-        }));
+        doctor: doctor.name,
+        id: doctor._id,
+      }));
 
   const onInputNumberChange = (e, name) => {
     const value = e.value || 0;
@@ -468,7 +468,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
         label="Si"
         icon="pi pi-check"
         className="p-button-text"
-        //onClick={deleteReservations}
+      //onClick={deleteReservations}
       />
     </>
   );
@@ -568,7 +568,12 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
               body={percentBodyTemplate}
               headerStyle={{ width: "14%", minWidth: "10rem" }}
             ></Column>
-            <Column field="status"header="Estado de la reserva" headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
+            <Column 
+             field="status"
+             header="Estado de la reserva" 
+             sortable
+             body={statusBodyTemplate}
+             headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
             <Column body={actionButtons} />
           </DataTable>
 

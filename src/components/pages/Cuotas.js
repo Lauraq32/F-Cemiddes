@@ -19,7 +19,8 @@ const Products = () => {
     let emptyCuotas = {
         _id: null,
         treatmentId:'',
-        patientId:''
+        patientId:'',
+        status: 'activa'
     };
 
     const [cuotas, setCuotas] = useState(null);
@@ -262,6 +263,15 @@ const Products = () => {
         );
     }
 
+    const statusBodyTemplate = (rowData) => {
+        return (
+          <>
+            <span className="p-column-title">Status</span>
+            {rowData.status}
+          </>
+        );
+    }
+
     const clientBodyTemplate = (rowData) => {
         return (
             <>
@@ -354,7 +364,7 @@ const Products = () => {
                         <Column field="total" header="Total del tratamiento" body={totalPriceBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="amountPayable" header="Monto Pagado" body={payableBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="deuda" header="Deuda" body={deudaBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
-                        <Column field="status"header="Estado del pago" headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
+                        <Column field="status"header="Estado del pago" body={statusBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
                     <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de las cuotas" modal className="p-fluid" footer={productDialogFooter} onHide={hideDuesDialog}>

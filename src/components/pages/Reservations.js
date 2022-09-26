@@ -76,7 +76,6 @@ const Reservations = () => {
         },
       };
       const res = await axios.get(url, options);
-
       setProducts(res.data.products);
     } catch (error) {
       console.error(error);
@@ -265,8 +264,7 @@ const Reservations = () => {
 
   const findProducts = () => {
     const products = selectedReservation.products.map((product) => ({
-      ...product,
-      id: product._id,
+      id: product,
     }));
 
     return products;
