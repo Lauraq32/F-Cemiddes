@@ -284,8 +284,7 @@ const Doctors = () => {
         </>
     );
 
-    return (
-        
+    return (  
         <div className="grid doctors-table">
             <div className="col-12">
                 <div className="card">

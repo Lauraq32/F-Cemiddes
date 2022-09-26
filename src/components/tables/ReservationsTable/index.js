@@ -547,7 +547,6 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
               headerStyle={headerStyle}
               sortable
             />
-             <Column field="tratamiento" header="Tratamiento" sortable body={treatmentBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
             <Column
               field="phone"
               header="Telefono"
@@ -564,17 +563,12 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
             ></Column>
             <Column
               field="percent"
-              header="Porcentaje"
+              header="Porciento"
               sortable
               body={percentBodyTemplate}
               headerStyle={{ width: "14%", minWidth: "10rem" }}
             ></Column>
-            <Column
-              field="status"
-              header="Estatus de la reserva"
-              headerStyle={headerStyle}
-              sortable
-            />
+            <Column field="status"header="Estado de la reserva" headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
             <Column body={actionButtons} />
           </DataTable>
 
@@ -660,7 +654,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
               />
             </div>
             <div className="field">
-              <label htmlFor="percent">Porcentaje</label>
+              <label htmlFor="percent">Porciento</label>
               <InputNumber
                 id="percent"
                 value={patient.percent}
@@ -755,13 +749,6 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
                 )}
               </div>
             </div>
-            <Column
-              field="status"
-              header="Estado de la reserva"
-              body={statusBodyTemplate}
-              headerStyle={headerStyle}
-              sortable
-            />
             <Dialog
               visible={deleteReservationDialog}
               style={{ width: "450px" }}

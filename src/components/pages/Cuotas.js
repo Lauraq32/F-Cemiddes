@@ -338,13 +338,11 @@ const Products = () => {
     );
 
     return (
-       
         <div className="grid crud-demo">
             <div className="col-12">
                 <div className="card">
                     <Toast ref={toast} />
                     <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
-
                     <DataTable ref={dt} value={cuotas} selection={selectedCuotas} onSelectionChange={(e) => setSelectedCuotas(e.value)}
                         dataKey="_id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]} className="datatable-responsive"
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
@@ -356,33 +354,26 @@ const Products = () => {
                         <Column field="total" header="Total del tratamiento" body={totalPriceBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="amountPayable" header="Monto Pagado" body={payableBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column field="deuda" header="Deuda" body={deudaBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
-                        <Column field="status"header="Estado de la reserva" headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
+                        <Column field="status"header="Estado del pago" headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
-
                     <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de las cuotas" modal className="p-fluid" footer={productDialogFooter} onHide={hideDuesDialog}>
                         <div className="field">
                             <label htmlFor="treatment">Tratamiento</label>
                             <Dropdown id="treatment" value={dropDownTreatment} onChange={(e) => setDropDownTreatment(e.value)} options={dropDownTreatmentValues} optionLabel="treatment" placeholder="Seleccionar" />
                             {submitted && !cuota.treatmentId && <small className="p-invalid">el nombre de la doctora es necesario.</small>}
                         </div>
-
-
                         <div className="field col">
                             <label htmlFor="client">Paciente</label>
                             <Dropdown id="client" value={dropDownClient} onChange={(e) => setDropDownClient(e.value)} options={dropDownClientValues} optionLabel="client" placeholder="Seleccionar" />
                         </div>
-
-
                     </Dialog>
-
                     <Dialog visible={deleteCuotaDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteProductDialogFooter} onHide={hideDeleteProductDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {cuota && <span>¿Estás seguro de que quieres eliminar <b>{cuota.cuotas}</b>?</span>}
                         </div>
                     </Dialog>
-
                     <Dialog visible={deleteCuotasDialog} style={{ width: '450px' }} header="Confirmar" modal footer={deleteProductsDialogFooter} onHide={hideDeleteProductsDialog}>
                         <div className="flex align-items-center justify-content-center">
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
