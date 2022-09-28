@@ -58,7 +58,10 @@ const Clients = () => {
                 const allClients = response.data.patients;
                 setClients(allClients);
             })
-            .catch(error => console.error('Error while getting clients:', error));
+            .catch(error => {
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                getAllClients();
+            });
     }
 
 
@@ -101,7 +104,10 @@ const Clients = () => {
                         getAllClients();
 
                     })
-                    .catch(error => console.error('Error while adding client:', error));
+                    .catch(error => {
+                        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                        getAllClients();
+                    });
             }
             else {
                 axios.post(`${process.env.REACT_APP_API_URL}/api/patients`, _client, {headers: getHeaders()})
@@ -109,7 +115,10 @@ const Clients = () => {
                         toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                         getAllClients();
                     })
-                    .catch(error => console.error('Error while posting client', error));
+                    .catch(error => {
+                        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                        getAllClients();
+                    });
             }
 
             setClients(_clients);

@@ -57,7 +57,10 @@ const Doctors = () => {
             const allDoctors = response.data.doctors;
             setDoctors(allDoctors);
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+            getAllDoctors();
+        });
     }
 
 
@@ -108,7 +111,10 @@ const Doctors = () => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
                     getAllDoctors();                  
                 })
-                .catch(error => console.error('Error in editDoctor:',error));
+                .catch(error => {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                    getAllDoctors();
+                });
             }
             else {
                 axios.post(`${process.env.REACT_APP_API_URL}/api/doctors`, _doctor, {headers: getHeaders()})
@@ -116,7 +122,10 @@ const Doctors = () => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllDoctors();
                 })
-                .catch(error => console.error('Error while posting Doctor',error));
+                .catch(error => {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                    getAllDoctors();
+                });
                 setDoctors(_doctors);
             }
 
@@ -361,7 +370,7 @@ const Doctors = () => {
                         <div className="modal-content">
                         <p><b>Nombre:</b>{" "}{dialogContent.name}</p>
                         <p><b>Tel&eacute;fono:</b>{" "}{dialogContent.phone}</p>
-                        <p><b>Ganancias:</b>{" "}{dialogContent.totaldeganancias}</p>
+                        <p><b>Ganancias:</b>{" "}{formatCurrency(dialogContent.totaldeganancias)}</p>
                         </div>
                         </Dialog>}
                 </div>

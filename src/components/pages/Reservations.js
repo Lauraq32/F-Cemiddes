@@ -14,7 +14,7 @@ import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { Checkbox } from "primereact/checkbox";
 import { MultiSelect } from "primereact/multiselect";
-import { useDoctors }from "../../hooks/useDoctors";
+import { useDoctors } from "../../hooks/useDoctors";
 import ReservationsTable from "../tables/ReservationsTable";
 import axios from "axios";
 import fetchReservations from "../tables/ReservationsTable/index";
@@ -144,7 +144,12 @@ const Reservations = () => {
 
       selectedReservation(reservation);
     } catch (error) {
-      console.error(error);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Oops! Algo salio mal",
+        life: 5000,
+      });
     }
   };
 
@@ -189,7 +194,6 @@ const Reservations = () => {
   const showSelectedReservationDialog = (reservation) => {
     showDialog(reservation);
   };
-
 
   const deleteReservationDialogFooter = (
     <>
@@ -522,26 +526,44 @@ const Reservations = () => {
           </Dialog>
         </Dialog>
       )}
-      {dialogIsVisible && 
-        <Dialog 
+      {dialogIsVisible && (
+        <Dialog
           visible={dialogIsVisible}
           style={{ width: "450px" }}
           header="Detalles de la reservación"
           footer={<div />}
           className="p-fluid"
           onHide={hideDialog}
-          modal>
+          modal
+        >
           <div className="modal-content">
-          <p><b>Concepto:</b>{" "}{dialogContent.concept}</p>
-          <p><b>Monto pagado:</b>{" "}{dialogContent.amountPayable}</p>
-          <p><b>Fecha:</b>{" "}{dialogContent.date}</p>
-          <p><b>Doctor:</b>{" "}{dialogContent.doctor.name}</p>
-          <p><b>Paciente:</b>{" "}{dialogContent.patient.name}</p>
-          <p><b>Tipo de pago:</b>{" "}{dialogContent.patientType}</p>
-          <p><b>Porcentaje:</b>{" "}{dialogContent.percent}</p>
-          <p><b>Tel&eacute;fono:</b>{" "}{dialogContent.phone}</p>
+            <p>
+              <b>Concepto:</b> {dialogContent.concept}
+            </p>
+            <p>
+              <b>Monto pagado:</b> {dialogContent.amountPayable}
+            </p>
+            <p>
+              <b>Fecha:</b> {dialogContent.date}
+            </p>
+            <p>
+              <b>Doctor:</b> {dialogContent.doctor.name}
+            </p>
+            <p>
+              <b>Paciente:</b> {dialogContent.patient.name}
+            </p>
+            <p>
+              <b>Tipo de pago:</b> {dialogContent.patientType}
+            </p>
+            <p>
+              <b>Porcentaje:</b> {dialogContent.percent}
+            </p>
+            <p>
+              <b>Tel&eacute;fono:</b> {dialogContent.phone}
+            </p>
           </div>
-        </Dialog>}
+        </Dialog>
+      )}
     </>
   );
 };

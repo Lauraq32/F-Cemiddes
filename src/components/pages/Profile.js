@@ -55,7 +55,10 @@ const Profile = () => {
                 getUser();
 
             })
-            .catch(error => console.error('Error while updating password:',error));
+            .catch(error => {
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                getUser();
+            });
         }
 
     }
@@ -70,27 +73,27 @@ const Profile = () => {
                 <div className="card p-fluid">
                     <h5>Actualizar Perfil</h5>
                     <div className="field">
-                        <label htmlFor="name">First Name</label>
+                        <label htmlFor="name">Nombre</label>
                         <InputText id="nombre" type="text" value={user.name} onChange={(e) => onInputChange(e, 'name')}   />
                     </div>
 
                     <div className="field">
-                        <label htmlFor="lastname">Last Name</label>
+                        <label htmlFor="lastname">Aoellido</label>
                         <InputText id="lastname" type="text" value={user.lastname}  onChange={(e) => onInputChange(e, 'lastname')} />
                     </div>
 
                     <div className="field">
-                        <label htmlFor="rol">Role</label>
+                        <label htmlFor="rol">Rol</label>
                         <InputText id="rol" type="text" value={user.role}  onChange={(e) => onInputChange(e, 'role')} />
                     </div>
 
                     <div className="field">
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email">Correo Electronico</label>
                         <InputText id="email" type="text" value={user.email} onChange={(e) => onInputChange(e, 'email')} />
                     </div>
 
                     <div className="field">
-                        <label htmlFor="password">Change Password</label>
+                        <label htmlFor="password">Cambiar contraseña</label>
                         <InputText id="password" type="password" placeholder='New Password' onChange={(e) => onInputChange(e, 'password')} />
   
                     </div>

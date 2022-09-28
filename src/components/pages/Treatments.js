@@ -44,7 +44,10 @@ const Treatments = () => {
             const allProducts = response.data.treatments;
             setProducts(allProducts);
         })
-        .catch(error => console.error('Error:',error));
+        .catch(error => {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+            getAllProducts();
+        });
     }
 
     const formatCurrency = (value) => {
@@ -88,7 +91,10 @@ const Treatments = () => {
                     getAllProducts();
 
                 })
-                .catch(error => console.error('Error in editProduct:',error));
+                .catch(error => {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                    getAllProducts();
+                });
             }
             else {   
                 axios.post(`${process.env.REACT_APP_API_URL}/api/treatments`, _treatment, {headers: getHeaders()})
@@ -96,7 +102,10 @@ const Treatments = () => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllProducts();
                 })
-                .catch(error => console.error('Error while posting treatment',error));
+                .catch(error => {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                    getAllProducts();
+                });
             }
 
             
@@ -327,7 +336,7 @@ const Treatments = () => {
                         modal>
                         <div className="modal-content">
                         <p><b>Nombre:</b>{" "}{dialogContent.name}</p>
-                        <p><b>Total:</b>{" "}{dialogContent.total}</p>
+                        <p><b>Total:</b>{" "}{formatCurrency(dialogContent.total)}</p>
                         </div>
                         </Dialog>}
                 </div>

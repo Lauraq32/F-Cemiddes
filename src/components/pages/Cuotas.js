@@ -58,7 +58,10 @@ const Products = () => {
             const allProducts = response.data; //comment
             setCuotas(allProducts);
         })
-        .catch(error => console.error('Error:',error));
+        .catch(error => {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+            getAllCuotas();
+        });
     }
 
     const getAllClients = () => {
@@ -68,7 +71,10 @@ const Products = () => {
             setClients(allClients);
 
         })
-        .catch(error => console.error('Error:',error));
+        .catch(error => {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+            getAllCuotas();
+        });
     }
 
     const getAllTreatments = () => {
@@ -77,7 +83,10 @@ const Products = () => {
             const allTreatments = response.data.treatments;
             setTreatments(allTreatments);
         })
-        .catch(error => console.error('Error:',error));
+        .catch(error => {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+            getAllTreatments();
+        });
     }
 
     const dropDownClientValues = clients === null
@@ -141,7 +150,10 @@ const Products = () => {
                     getAllCuotas();
 
                 })
-                .catch(error => console.error('Error in editProduct:',error));
+                .catch(error => {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                    getAllCuotas();
+                });
             }
             else {   
                 axios.post(`${process.env.REACT_APP_API_URL}/api/patients/treatments`, _cuota, {headers: getHeaders()})
@@ -149,7 +161,10 @@ const Products = () => {
                     toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
                     getAllCuotas();
                 })
-                .catch(error => console.error('Error while posting cuota',error));
+                .catch(error => {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                    getAllCuotas();
+                });
             }
 
             
@@ -408,9 +423,9 @@ const Products = () => {
                         <div className="modal-content">
                         <p><b>Tratamiento:</b>{" "}{dialogContent.treatment.name}</p>
                         <p><b>Nombre:</b>{" "}{dialogContent.patient.name}</p>
-                        <p><b>Total:</b>{" "}{dialogContent.deuda + dialogContent.totalAmountPaid}</p>
-                        <p><b>Monto pagado:</b>{" "}{dialogContent.totalAmountPaid}</p>
-                        <p><b>Monto pagado:</b>{" "}{dialogContent.deuda}</p>
+                        <p><b>Total del tratamiento:</b>{" "}{formatCurrency(dialogContent.deuda + dialogContent.totalAmountPaid)}</p>
+                        <p><b>Monto pagado:</b>{" "}{formatCurrency(dialogContent.totalAmountPaid)}</p>
+                        <p><b>Deuda:</b>{" "}{formatCurrency(dialogContent.deuda)}</p>
                         </div>
                         </Dialog>}
                 </div>

@@ -88,19 +88,25 @@ const Products = () => {
             if (product._id) {
                 axios.put(`${process.env.REACT_APP_API_URL}/api/products/` + _product._id, _product , {headers: getHeaders()}, )
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Actualizado Exitosamente', life: 5000 });
                     getAllProducts();
 
                 })
-                .catch(error => console.error('Error in editProduct:',error));
+                .catch(error => {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                    getAllProducts();
+                });
             }
             else {   
                 axios.post(`${process.env.REACT_APP_API_URL}/api/products`, _product, {headers: getHeaders()})
                 .then(response => {
-                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 3000 });
+                    toast.current.show({ severity: 'success', summary: 'Exito', detail: 'Creado Exitosamente', life: 5000 });
                     getAllProducts();
                 })
-                .catch(error => console.error('Error while posting product',error));
+                .catch(error => {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'Oops! Algo salio mal', life: 5000 });
+                    getAllProducts();
+                });
             }
 
             
@@ -290,14 +296,14 @@ const Products = () => {
                         <Column field="name" header="Productos" sortable body={nameBodyTemplate} headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="amount" header="Cantidad" body={quantityBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '10rem' }}></Column>
                         <Column field="price" header="Precio" body={priceBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
-                        <Column field="status"header="Estado del pago" body={statusBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
+                        <Column field="status"header="Estado de los productos" body={statusBodyTemplate} sortable headerStyle={{ width: '14%', minWidth: '8rem' }}></Column>
                         <Column body={actionBodyTemplate}></Column>
                     </DataTable>
 
                     <Dialog visible={productDialog} style={{ width: '450px' }} header="Detalles de los productos" modal className="p-fluid" footer={productDialogFooter} onHide={hideProductDialog}>
                         <div className="field">
                             <label htmlFor="products">Productos</label>
-                            <InputText id="products" value={product.products} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
+                            <InputText id="products" value={product.name} onChange={(e) => onInputChange(e, 'name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.name })} />
                             {submitted && !product.name && <small className="p-invalid">el nombre de la doctora es necesario.</small>}
                         </div>
 
@@ -348,7 +354,7 @@ const Products = () => {
                         <div className="modal-content">
                         <p><b>Nombre:</b>{" "}{dialogContent.name}</p>
                         <p><b>Cantidad:</b>{" "}{dialogContent.amount}</p>
-                        <p><b>Precio:</b>{" "}{dialogContent.price}</p>
+                        <p><b>Precio:</b>{" "}{formatCurrency(dialogContent.price)}</p>
                         </div>
                         </Dialog>}
                 </div>
