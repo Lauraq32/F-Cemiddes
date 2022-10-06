@@ -9,7 +9,6 @@ import { useDoctors } from "../../hooks/useDoctors";
 const EarningsPage = () => {
   const [doctors] = useDoctors();
   const [submitted, setSubmitted] = useState(false);
-  const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [earnings, setEarnings] = useState(null);
   // form fields
@@ -21,10 +20,6 @@ const EarningsPage = () => {
     () => doctors.map(doctor => ({ value: doctor._id, label: doctor.name })),
     [doctors]
   );
-
-  useEffect(() => {
-    getEarningsByDate();
-  }, [])
 
   // const submit = event => {
   //   event.preventDefault();
@@ -44,9 +39,10 @@ const EarningsPage = () => {
   //   }, 1000);
   // };
 
-  async function getEarningsByDate() {
+  async function getEarningsByDate(e) {
+    e.preventDefault();
     try {
-      const url = `${process.env.REACT_APP_API_URL}/api/reservations/earnings/`;
+      const url = `${process.env.REACT_APP_API_URL}/api/doctors/earnings/${doctor}?firstDate=2022-10-01&lastDate=2022-10-31`;
       const token = localStorage.getItem("token");
       if (!token) return;
 
@@ -56,8 +52,8 @@ const EarningsPage = () => {
         },
       };
       const res = await axios.get(url, options);
-
-      setReservations(res.data.earnings);
+      const earnings = res.data.earnings[0]??null;
+      setEarnings(earnings);
     } catch (error) {
       console.error(error);
     }
@@ -134,7 +130,7 @@ const EarningsPage = () => {
                 ></i>
               </p>
             )}
-            {!loading && earnings && <p>Ganancias: {reservations.earnings}</p>}
+            {!loading && earnings && <p>Ganancias: {earnings.total}</p>}
           </div>
         </div>
       </div>

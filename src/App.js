@@ -84,6 +84,7 @@ function App() {
     }
 
     const onToggleMenuClick = (event) => {
+        event.preventDefault();
         menuClick = true;
 
         if (isDesktop()) {
@@ -103,7 +104,6 @@ function App() {
             setMobileMenuActive((prevState) => !prevState);
         }
 
-        event.preventDefault();
     }
 
     const onSidebarClick = () => {
@@ -111,10 +111,8 @@ function App() {
     }
 
     const onMobileTopbarMenuClick = (event) => {
-        mobileTopbarMenuClick = true;
-
-        setMobileTopbarMenuActive((prevState) => !prevState);
         event.preventDefault();
+        setMobileTopbarMenuActive((prevState) => !prevState);
     }
 
     const onMobileSubTopbarMenuClick = (event) => {

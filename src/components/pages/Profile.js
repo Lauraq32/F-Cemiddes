@@ -78,7 +78,7 @@ const Profile = () => {
                     </div>
 
                     <div className="field">
-                        <label htmlFor="lastname">Aoellido</label>
+                        <label htmlFor="lastname">Apellido</label>
                         <InputText id="lastname" type="text" value={user.lastname}  onChange={(e) => onInputChange(e, 'lastname')} />
                     </div>
 
@@ -105,7 +105,7 @@ const Profile = () => {
 }
 
 const comparisonFn = function (prevProps, nextProps) {
-    return prevProps.location.pathname === nextProps.location.pathname;
+    return prevProps.location?.pathname === nextProps.location?.pathname;
 };
 
 export default React.memo(Profile, comparisonFn);

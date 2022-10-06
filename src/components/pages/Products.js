@@ -20,7 +20,7 @@ const Products = () => {
         name: '',
         amount: 0,
         price: 0,
-        status: ''
+        status: 'lleno'
     };
 
     const [products, setProducts] = useState(null);
@@ -320,6 +320,11 @@ const Products = () => {
                                 <InputNumber id="price" value={product.price} onValueChange={(e) => onInputNumberChange(e, 'price')} mode="currency" currency="DOP" locale="es-MX" />
                                 {submitted && !product.price && <small className="p-invalid">el precio es necesario.</small>}
                             </div>
+                        </div>
+                        <div className="field">
+                            <label htmlFor="status">Status</label>
+                            <InputText id="status" value={product.status} onChange={(e) => onInputChange(e, 'status')} required className={classNames({ 'p-invalid': submitted && !product.status })} />
+                            {submitted && !product.status && <small className="p-invalid">se necesita agregar el status</small>}
                         </div>
                     </Dialog>
 
