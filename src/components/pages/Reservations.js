@@ -267,11 +267,17 @@ const Reservations = () => {
   };
 
   const findProducts = () => {
-    const products = selectedReservation.products.map((product) => ({
-      id: product,
-    }));
+    const reservationProducts = {}
+    selectedReservation.products.forEach(productId => {
+      reservationProducts[productId] = true
+    })
 
-    return products;
+    const selectedProducts = products.filter(product => reservationProducts[product._id]).map(product => ({
+      ...product,
+      id: product._id
+    }))
+
+    return selectedProducts;
   };
 
   const onInputNumberChange = (e, name) => {
@@ -298,7 +304,8 @@ const Reservations = () => {
   };
 
   const changeProducts = (e) => {
-    setSelectedReservation({ ...selectedReservation, products: e.value });
+    const products = e.value.map(product => product._id)
+    setSelectedReservation({ ...selectedReservation, products });
   };
 
   const changeDoctor = (e) => {
