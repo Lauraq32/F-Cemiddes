@@ -461,6 +461,20 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
     setDeleteReservationDialog(true);
   };
 
+  const statusOptions = [
+    {id: 1, name: 'Pendiente', status: 'pendiente'},
+    {id: 2, name: 'Completado', status: 'completado'},
+    {id: 3, name: 'Cancelado', status: 'cancelado'},
+  ]
+
+
+  const [status, setStatus] = useState()
+
+  const updateStatus = (e) => {
+    setStatus(e.value)
+    setReservation({...reservation, status: e.value.status})
+  }
+
   const deleteReservationDialogFooter = (
     <>
       <Button
@@ -536,7 +550,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
             />
             <Column
               field="paymentType"
-              header="metodo de pago"
+              header="método de pago"
               headerStyle={headerStyle}
               sortable
             />
@@ -554,7 +568,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
             />
             <Column
               field="phone"
-              header="Telefono"
+              header="Teléfono"
               sortable
               body={phoneBodyTemplate}
               headerStyle={{ width: "14%", minWidth: "10rem" }}
@@ -563,6 +577,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
               field="date"
               header="Fecha"
               sortable
+              value={formatDate(reservation.date)}
               body={dateBodyTemplate}
               headerStyle={{ width: "14%", minWidth: "10rem" }}
             ></Column>
@@ -586,7 +601,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
           <Dialog
             visible={reservationDialog}
             style={{ width: "450px" }}
-            header="Nueva Reservacion"
+            header="Nueva Reservación"
             modal
             className="p-fluid"
             footer={reservationDialogFooter}
@@ -628,7 +643,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
               )}
             </div>
             <div className="field">
-              <label className="mb-3">Telefono</label>
+              <label className="mb-3">Teléfono</label>
               <InputText
                 id="phone"
                 value={reservations.phone}
@@ -639,7 +654,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
                 })}
               />
               {submitted && !reservations.phone && (
-                <small className="p-invalid">el telefono es necesario.</small>
+                <small className="p-invalid">el teléfono es necesario.</small>
               )}
             </div>
             <div className="field">
@@ -691,7 +706,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
                 <label htmlFor="fecha">Fecha</label>
                 <Calendar
                   id="date"
-                  value={formatDate(patient.date)}
+                  value={formatDate(reservation.date)}
                   onChange={(e) => onCalenderChange(e, "date")}
                   inputMode="date"
                   inline={false}
@@ -703,19 +718,18 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
               </div>
             </div>
             <div className="field">
-              <label htmlFor="status">Status</label>
-              <InputText
+            <label htmlFor="status">Estatus</label>
+              <Dropdown
                 id="status"
-                value={reservation.status}
-                onChange={(e) => onInputChange(e, "status")}
-                required
-                className={classNames({
-                  "p-invalid": submitted && !reservation.status,
-                })}
+                optionLabel="name"
+                value={status}
+                options={statusOptions}
+                onChange={updateStatus}
+                placeholder="Seleccionar"
               />
               {submitted && !reservation.status && (
                 <small className="p-invalid">
-                  se necesita agregar el status
+                  se necesita agregar el estatus
                 </small>
               )}
             </div>

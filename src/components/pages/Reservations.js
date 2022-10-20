@@ -36,14 +36,34 @@ const Reservations = () => {
   const [patients, setPatients] = useState([]);
   const toast = useRef(null);
   const [deleteReservationDialog, setDeleteReservationDialog] = useState(false);
-
+  const [doctor, setDoctors] = useState([]);
   const [doctors] = useDoctors();
   const [dialogIsVisible, dialogContent, showDialog, hideDialog] = useDialog();
 
   useEffect(() => {
     getAllProducts();
     getAllPatients();
+    getAllDoctors();
   }, []);
+
+  async function getAllDoctors() {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/api/doctors`;
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const options = {
+        headers: {
+          Authorization: token,
+        },
+      };
+      const res = await axios.get(url, options);
+
+      setDoctors(res.data.doctors);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   async function getAllPatients() {
     try {
@@ -230,7 +250,7 @@ const Reservations = () => {
   );
 
   const onCalenderChange = (e) => {
-    const value = e.value;
+    const value = (formatDate.value);
     const fields = { ...selectedReservation, date: value };
     setSelectedReservation(fields);
   };
@@ -289,7 +309,7 @@ const Reservations = () => {
 
   const onPaymentTypeChange = (e) => {
     let fields = { ...selectedReservation };
-    fields["paymenttype"] = e.value;
+    fields["paymentType"] = e.value;
     setSelectedReservation(fields);
   };
 
@@ -318,6 +338,20 @@ const Reservations = () => {
       patientTreatment: e.value,
     });
   };
+
+  const statusOptions = [
+    {id: 1, name: 'Pendiente', status: 'pendiente'},
+    {id: 2, name: 'Completado', status: 'completado'},
+    {id: 3, name: 'Cancelado', status: 'cancelado'},
+  ]
+
+
+  const [status, setStatus] = useState()
+
+  const updateStatus = (e) => {
+    setStatus(e.value)
+    setSelectedReservation({...selectedReservation, status: e.value.status})
+  }
 
   const productOptions = products.map((product) => ({
     ...product,
@@ -411,6 +445,7 @@ const Reservations = () => {
                 inputMode="date"
                 inline={false}
                 placeholder={formatDate(reservation.date)}
+                dateFormat="dd/mm/yy"
               />
               {submitted && !reservation.date && (
                 <small className="p-invalid">la fecha es necesaria</small>
@@ -419,7 +454,7 @@ const Reservations = () => {
           </div>
           <div className="formgrid grid">
             <div className="field col">
-              <label htmlFor="amountpayable">Monto a pagar</label>
+              <label htmlFor="amountPayable">Monto a pagar</label>
               <InputNumber
                 id="amountPayable"
                 value={reservation.amountPayable}
@@ -451,7 +486,7 @@ const Reservations = () => {
             )}
           </div>
           <div className="field">
-            <label className="mb-3">metodo de pago</label>
+            <label className="mb-3">método de pago</label>
             <div className="formgrid grid">
               <div className="field-radiobutton col-6">
                 <RadioButton
@@ -511,6 +546,17 @@ const Reservations = () => {
               onChange={changeProducts}
             />
           </div>
+          <div className="field">
+              <label htmlFor="status">Status</label>
+              <Dropdown
+                id="status"
+                optionLabel="name"
+                value={status}
+                options={statusOptions}
+                onChange={updateStatus}
+                placeholder="Seleccionar"
+              />
+            </div>
           <Dialog
             visible={deleteReservationDialog}
             style={{ width: "450px" }}

@@ -22,7 +22,7 @@ return (
                     <div className="surface-card shadow-2 p-3 border-round">
                         <div className="flex justify-content-between mb-3">
                             <div>
-                                <div className="text-800 font-medium ml-4 mt-3" style={{/* fontSize: '2rem'*/ }}>Comision</div>
+                                <div className="text-800 font-medium ml-4 mt-3" style={{/* fontSize: '2rem'*/ }}>Comisión</div>
                             </div>
                             <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '3rem'/*, height: '4.5rem'*/ }}>
                                 <i className="pi pi-user-edit text-blue-500 dashboard-icon" style={{ fontSize: '2rem' }}></i>

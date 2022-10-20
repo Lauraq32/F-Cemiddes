@@ -232,7 +232,7 @@ const Doctors = () => {
     const dateBodyTemplate = (rowData) => {
         return (
             <>
-                <span className="p-column-title">Fetcha</span>
+                <span className="p-column-title">Fecha</span>
                 {/* {rowData.date} */}
                 {formatDate(rowData.date)}
 
@@ -324,7 +324,7 @@ const Doctors = () => {
                         </div>
 
                         <div className="field">
-                            <label className="mb-3">Telefono</label>
+                            <label className="mb-3">Teléfono</label>
                             <InputText id="phone" value={doctor.phone} onChange={(e) => onInputChange(e, 'phone')} required className={classNames({ 'p-invalid': submitted && !doctor.phone })} />
                             {submitted && !doctor.phone && <small className="p-invalid">el numeromovil es necesario</small>}
                         </div>

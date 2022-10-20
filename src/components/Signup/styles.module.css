@@ -16,6 +16,11 @@
 		0px 3px 4px 0px rgb(0 0 0 / 14%), 0px 1px 8px 0px rgb(0 0 0 / 12%);
 }
 
+img.login_logo{
+	width: 250px;
+	margin-bottom: 30px;
+}
+
 .left {
 	flex: 1;
 	display: flex;
@@ -61,6 +66,18 @@
 	border: none;
 	width: 370px;
 	padding: 15px;
+	border-radius: 10px;
+	background-color: #edf5f3;
+	margin: 5px 0;
+	font-size: 14px;
+}
+
+.role {
+	outline: none;
+	border: none;
+	width: 370px;
+	padding: 5px;
+	height: 46px;
 	border-radius: 10px;
 	background-color: #edf5f3;
 	margin: 5px 0;
