@@ -55,9 +55,13 @@ const EarningsPage = () => {
   const [showDialog] = useDialog();
 
   const doctorsOpts = useMemo(
-    () => doctors.map((doctor) => ({ value: doctor._id, label: doctor.name })),
+    () => doctors.map((doctor) => ({ value: doctor._id, label: doctor.name, id: doctor._id })),
     [doctors]
   );
+
+  const updateDoctor = (e) => {
+     setPayment({...payment, doctorId: e.value._id })
+  }
 
   const formatCurrency = (value) => {
     return value.toLocaleString("es-MX", {
@@ -155,18 +159,14 @@ const EarningsPage = () => {
   }
 
   const onInputChange = (e, name) => {
-    const val = (e.target && e.target.value) || '';
-    let _payment = { ...payment };
-    _payment[`${name}`] = val;
+    const value = (e.target && e.target.value) || '';
 
-    setPayment(_payment);
-}
+    setPayment({...payment,[name]: value });
+  }
+
 const onInputNumberChange = (e, name) => {
-  const val = e.value || 0;
-  let _payment = { ...payment };
-  _payment[`${name}`] = val;
-
-  setPayment(_payment);
+  const value = e.value || 0;
+  setPayment({...payment,[name]: value });
 }
 
   const quantityBodyTemplate = (rowData) => {
@@ -279,9 +279,7 @@ const onInputNumberChange = (e, name) => {
   };
 
   const findDoctor = () => {
-    return doctors.find(
-      (doctor) => doctor._id
-    );
+    return doctors.find((doctor) => doctor._id === payment.doctorId);
   };
 
   const onCalenderChange = (e) => {
@@ -466,7 +464,7 @@ const onInputNumberChange = (e, name) => {
           <Column
             field="doctor.name"
             header="Nombre"
-            body={nameBodyTemplate}
+            // body={nameBodyTemplate}
             headerStyle={headerStyle}
           ></Column>
           <Column
@@ -505,7 +503,7 @@ const onInputNumberChange = (e, name) => {
               options={doctors}
               optionLabel="name"
               placeholder="Select"
-              onChange={(e) => onInputChange(e, 'name')}
+              onChange={updateDoctor}
               value={findDoctor()}
             />
           </div>

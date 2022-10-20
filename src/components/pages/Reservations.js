@@ -19,14 +19,8 @@ import ReservationsTable from "../tables/ReservationsTable";
 import axios from "axios";
 import fetchReservations from "../tables/ReservationsTable/index";
 import { useDialog } from "../../hooks/useDialog";
+import { format } from 'date-fns';
 
-const formatDate = (value) => {
-  return new Date(value).toLocaleDateString("en-US", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
-};
 
 const Reservations = () => {
   const [selectedReservation, setSelectedReservation] = useState(null);
@@ -39,8 +33,10 @@ const Reservations = () => {
   const [doctor, setDoctors] = useState([]);
   const [doctors] = useDoctors();
   const [dialogIsVisible, dialogContent, showDialog, hideDialog] = useDialog();
+  const [reservations, setReservations] = useState([])
 
   useEffect(() => {
+    fetchReservations();
     getAllProducts();
     getAllPatients();
     getAllDoctors();
@@ -97,6 +93,25 @@ const Reservations = () => {
       };
       const res = await axios.get(url, options);
       setProducts(res.data.products);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function fetchReservations() {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/api/reservations`;
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const options = {
+        headers: {
+          Authorization: token,
+        },
+      };
+      const res = await axios.get(url, options);
+
+      setReservations(res.data.reservations);
     } catch (error) {
       console.error(error);
     }
@@ -189,12 +204,15 @@ const Reservations = () => {
         },
       };
       await axios.put(url, formData(selectedReservation), options);
+
       toast.current.show({
         severity: "success",
         summary: "Exito",
         detail: "Actualizado Exitosamente",
         life: 3000,
       });
+      
+      await fetchReservations()
 
       hideEditDialog();
     } catch (error) {
@@ -250,7 +268,7 @@ const Reservations = () => {
   );
 
   const onCalenderChange = (e) => {
-    const value = (formatDate.value);
+    const value = format(e.value, "yyyy-MM-dd");
     const fields = { ...selectedReservation, date: value };
     setSelectedReservation(fields);
   };
@@ -288,8 +306,8 @@ const Reservations = () => {
 
   const findProducts = () => {
     const reservationProducts = {}
-    selectedReservation.products.forEach(productId => {
-      reservationProducts[productId] = true
+    selectedReservation.products.forEach(product => {
+      reservationProducts[product.id || product._id] = true
     })
 
     const selectedProducts = products.filter(product => reservationProducts[product._id]).map(product => ({
@@ -324,8 +342,7 @@ const Reservations = () => {
   };
 
   const changeProducts = (e) => {
-    const products = e.value.map(product => product._id)
-    setSelectedReservation({ ...selectedReservation, products });
+    setSelectedReservation({ ...selectedReservation, products: e.value });
   };
 
   const changeDoctor = (e) => {
@@ -365,9 +382,11 @@ const Reservations = () => {
     <>
       <Toast ref={toast} />
       <ReservationsTable
+        reservations={reservations}
         onEdit={editReservation}
         onDelete={deleteReservation}
         onShowDetails={showSelectedReservationDialog}
+        onSaveReservation={fetchReservations}
       />
       {reservation && (
         <Dialog
@@ -440,11 +459,11 @@ const Reservations = () => {
               <label htmlFor="fecha">Fecha</label>
               <Calendar
                 id="fecha"
-                value={formatDate(reservation.date)}
+                value={new Date(reservation.date)}
                 onChange={(e) => onCalenderChange(e, "date")}
                 inputMode="date"
                 inline={false}
-                placeholder={formatDate(reservation.date)}
+                placeholder="Seleccione una fecha"
                 dateFormat="dd/mm/yy"
               />
               {submitted && !reservation.date && (

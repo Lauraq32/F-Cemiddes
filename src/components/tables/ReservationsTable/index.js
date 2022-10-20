@@ -29,7 +29,7 @@ const header = (
   </div>
 );
 
-const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
+const ReservationsTable = ({ reservations, onEdit, onDelete,  onSaveReservation, onShowDetails }) => {
   const formatDate = (value) => {
     return new Date(value).toLocaleDateString("en-GB", {
       day: "2-digit",
@@ -55,8 +55,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
   const toast = useRef(null);
   const dt = useRef(null);
 
-  const [reservations, setReservations] = useState([]);
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(false)
   const [reservation, setReservation] = useState(emptyReservation);
   const [reservationDialog, setReservationDialog] = useState(false);
   const [patients, setPatients] = useState([]);
@@ -72,30 +71,10 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
   const [deleteReservationDialog, setDeleteReservationDialog] = useState(false);
 
   useEffect(() => {
-    fetchReservations();
     getAllPatients();
     getAllDoctors();
     getAllProducts();
   }, []);
-
-  async function fetchReservations() {
-    try {
-      const url = `${process.env.REACT_APP_API_URL}/api/reservations`;
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      const options = {
-        headers: {
-          Authorization: token,
-        },
-      };
-      const res = await axios.get(url, options);
-
-      setReservations(res.data.reservations);
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   async function getAllPatients() {
     try {
@@ -195,7 +174,7 @@ const ReservationsTable = ({ onEdit, onDelete, onShowDetails }) => {
           detail: "Creado Exitosamente",
           life: 3000,
         });
-        await fetchReservations();
+        onSaveReservation()
         setReservation(emptyReservation);
         hideDialog();
       }
