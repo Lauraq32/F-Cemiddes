@@ -25,7 +25,7 @@ import { format } from 'date-fns';
 const Reservations = () => {
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [products, setProducts] = useState([]);
-  //const [adminDialog, setAdminDialog] = useState(false);
+  // const [adminDialog, setAdminDialog] = useState(false);
   const [patientTreatments, setPatientTreatments] = useState([]);
   const [patients, setPatients] = useState([]);
   const toast = useRef(null);

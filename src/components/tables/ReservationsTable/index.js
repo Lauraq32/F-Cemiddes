@@ -61,6 +61,7 @@ const ReservationsTable = ({ reservations, onEdit, onDelete,  onSaveReservation,
   const [patients, setPatients] = useState([]);
   const [products, setProducts] = useState([]);
   const [doctors, setDoctors] = useState([]);
+  const [adminDialog, setAdminDialog] = useState(false);
   const [patientTreatments, setPatientTreatments] = useState([]);
   const [dropDownPatient, setDropDownPatient] = useState([]);
   const [dropDownTreatment, setDropDownTreatment] = useState([]);
@@ -223,6 +224,11 @@ const ReservationsTable = ({ reservations, onEdit, onDelete,  onSaveReservation,
       style: "currency",
       currency: "DOP",
     });
+  };
+
+  const hideAdminDialog = () => {
+    //setSubmitted(false);
+    setAdminDialog(false);
   };
 
   const percentBodyTemplate = (rowData) => {
@@ -432,7 +438,11 @@ const ReservationsTable = ({ reservations, onEdit, onDelete,  onSaveReservation,
   };
 
   const editReservation = (reservation) => {
-    onEdit(reservation);
+    if (localStorage.getItem("role") !== "ADMIN") {
+      setAdminDialog(true);
+    } else {
+      onEdit(reservation);
+    }
   };
 
   const deleteReservation = (reservation) => {
@@ -790,6 +800,20 @@ const ReservationsTable = ({ reservations, onEdit, onDelete,  onSaveReservation,
                 )}
               </div>
             </Dialog>
+          </Dialog>
+          <Dialog
+            visible={adminDialog}
+            style={{ width: "450px" }}
+            modal
+            onHide={hideAdminDialog}
+          >
+            <div className="flex align-items-center justify-content-center">
+              <i
+                className="pi pi-exclamation-triangle mr-3"
+                style={{ fontSize: "2rem" }}
+              />
+              {reservation && <span>No tienes los permisos necesarios</span>}
+            </div>
           </Dialog>
         </div>
       </div>

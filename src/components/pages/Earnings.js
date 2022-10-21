@@ -39,6 +39,7 @@ const EarningsPage = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [earnings, setEarnings] = useState(null);
+  const [adminDialog, setAdminDialog] = useState(false);
   const [payments, setPayments] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [pagoDialog, setPagoDialog] = useState(false);
@@ -55,13 +56,18 @@ const EarningsPage = () => {
   const [showDialog] = useDialog();
 
   const doctorsOpts = useMemo(
-    () => doctors.map((doctor) => ({ value: doctor._id, label: doctor.name, id: doctor._id })),
+    () =>
+      doctors.map((doctor) => ({
+        value: doctor._id,
+        label: doctor.name,
+        id: doctor._id,
+      })),
     [doctors]
   );
 
   const updateDoctor = (e) => {
-     setPayment({...payment, doctorId: e.value._id })
-  }
+    setPayment({ ...payment, doctorId: e.value._id });
+  };
 
   const formatCurrency = (value) => {
     return value.toLocaleString("es-MX", {
@@ -78,39 +84,67 @@ const EarningsPage = () => {
     setSubmitted(false);
     setPagoDialog(false);
   };
-  
 
-  async function savePagos() {
+  const uptdatePago = async () => {
     setSubmitting(true);
-    try {
-      const url = `${process.env.REACT_APP_API_URL}/api/payments`;
-      const token = localStorage.getItem("token");
-      if (!token) return;
+    if (payment._id) {
+      try {
+        const url =
+          `${process.env.REACT_APP_API_URL}/api/payments/` + payment._id;
+        const token = localStorage.getItem("token");
+        if (!token) return;
 
-      const options = {
-        headers: {
-          Authorization: token,
-        },
-      };
-      
-      const response = await axios.post(url, payment, options);
+        const options = {
+          headers: {
+            Authorization: token,
+          },
+        };
+        await axios.put(url, payment, options);
 
-      if (response.status === 201) {
         toast.current.show({
           severity: "success",
-          summary: "Successful",
-          detail: "Creado Exitosamente",
+          summary: "Exito",
+          detail: "Actualizado Exitosamente",
           life: 3000,
         });
+
         await getPagos();
-        setPayment(emptyPago);
+
         hideDialog();
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.error(error);
+    } else {
+      try {
+        const url = `${process.env.REACT_APP_API_URL}/api/payments`;
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const options = {
+          headers: {
+            Authorization: token,
+          },
+        };
+
+        const response = await axios.post(url, payment, options);
+
+        if (response.status === 201) {
+          toast.current.show({
+            severity: "success",
+            summary: "Successful",
+            detail: "Creado Exitosamente",
+            life: 3000,
+          });
+          await getPagos();
+          setPayment(emptyPago);
+          hideDialog();
+        }
+      } catch (error) {
+        console.error(error);
+      }
     }
     setSubmitting(false);
-  }
+  };
 
   async function getPagos() {
     try {
@@ -159,15 +193,23 @@ const EarningsPage = () => {
   }
 
   const onInputChange = (e, name) => {
-    const value = (e.target && e.target.value) || '';
+    const value = (e.target && e.target.value) || "";
 
-    setPayment({...payment,[name]: value });
-  }
+    setPayment({ ...payment, [name]: value });
+  };
 
-const onInputNumberChange = (e, name) => {
-  const value = e.value || 0;
-  setPayment({...payment,[name]: value });
-}
+  const onInputNumberChange = (e, name) => {
+    const value = e.value || 0;
+    let _payment = { ...payment };
+    _payment[`${name}`] = value;
+
+    setPayment(_payment);
+  };
+
+  const hideAdminDialog = () => {
+    //setSubmitted(false);
+    setAdminDialog(false);
+  };
 
   const quantityBodyTemplate = (rowData) => {
     return (
@@ -203,38 +245,31 @@ const onInputNumberChange = (e, name) => {
       </>
     );
   };
-  
 
   const showSelectedProductDialog = (pago) => {
     showDialog(pago);
   };
 
   const statusOptions = [
-    {id: 1, name: 'Pagado', status: 'Pagado'},
-    {id: 2, name: 'Pendiente', status: 'Pendiente'}
-  ]
-  
-  const [status, setStatus] = useState()
-  
-    const updateStatus = (e) => {
-      setStatus(e.value)
-      setPayment({...payment, status: e.value.status})
+    { id: 1, name: "Pagado", status: "Pagado" },
+    { id: 2, name: "Pendiente", status: "Pendiente" },
+  ];
+
+  const [status, setStatus] = useState();
+
+  const updateStatus = (e) => {
+    setStatus(e.value);
+    setPayment({ ...payment, status: e.value.status });
+  };
+
+  const editProduct = (payment) => {
+    if (localStorage.getItem("role") !== "ADMIN") {
+      setAdminDialog(true);
+    } else {
+      setPayment({ ...payment });
+      setPagoDialog(true);
     }
-
-  // const editProduct = (pago) => {
-  //   if(localStorage.getItem('role') !== 'ADMIN'){
-  //       setAdminDialog(true);
-  //   } else {
-  //       setPago({ ...pago });
-  //       setProductDialog(true);
-  //   }
-  // }
-
-  const nameBodyTemplate = (rowData) => {
-    return (
-        <NavLink to={`/doctors/${rowData._id}`}>{rowData.name}</NavLink>
-    );
-}
+  };
 
   const openNewPago = () => {
     setPayment(emptyPago);
@@ -256,7 +291,7 @@ const onInputNumberChange = (e, name) => {
         label="Guardar"
         icon="pi pi-check"
         className="p-button-text"
-        onClick={savePagos}
+        onClick={uptdatePago}
       />
     </>
   );
@@ -272,6 +307,7 @@ const onInputNumberChange = (e, name) => {
         <Button
           icon="pi pi-pencil"
           className="p-button-rounded p-button-success"
+          onClick={() => editProduct(rowData)}
         />
         {/* <Button icon="pi pi-trash" className="p-button-rounded p-button-warning" onClick={() => confirmDeleteProduct(rowData)} /> */}
       </div>
@@ -287,7 +323,6 @@ const onInputNumberChange = (e, name) => {
     const fields = { ...payment, date: value };
     setPayment(fields);
   };
-  
 
   const leftToolbarTemplate = () => {
     return (
@@ -495,6 +530,7 @@ const onInputNumberChange = (e, name) => {
           className="p-fluid"
           footer={pagoDialogFooter}
           onHide={hideDialog}
+          // onEdit={editReservation}
         >
           <div className="field">
             <label htmlFor="doctor">Doctora</label>
@@ -512,36 +548,39 @@ const onInputNumberChange = (e, name) => {
             <InputNumber
               id="amount"
               value={payment.amount}
-              onValueChange={(e) => onInputNumberChange(e, 'amount')}
-              mode="currency" currency="DOP" locale="es-MX"
+              onValueChange={(e) => onInputNumberChange(e, "amount")}
+              mode="currency"
+              currency="DOP"
+              locale="es-MX"
             />
           </div>
           <div className="field">
-              <label htmlFor="status">Estatus</label>
-              <Dropdown
-                id="status"
-                optionLabel="name"
-                value={status}
-                options={statusOptions}
-                onChange={updateStatus}
-                placeholder="Seleccionar"
-              />
-              {submitted && !payment.status && (
-                <small className="p-invalid">
-                  Se necesita agregar el estatus
-                </small>
-              )}
-            </div>
-            <div className="formgrid grid">
+            <label htmlFor="status">Estatus</label>
+            <Dropdown
+              id="status"
+              optionLabel="name"
+              value={status}
+              options={statusOptions}
+              onChange={updateStatus}
+              placeholder="Seleccionar"
+            />
+            {submitted && !payment.status && (
+              <small className="p-invalid">
+                Se necesita agregar el estatus
+              </small>
+            )}
+          </div>
+          <div className="formgrid grid">
             <div className="field col">
               <label htmlFor="fecha">Fecha</label>
               <Calendar
                 id="fecha"
-                value={formatDate(payment.date)}
+                value={new Date(payment.date)}
                 onChange={(e) => onCalenderChange(e, "date")}
                 inputMode="date"
                 inline={false}
-                placeholder={formatDate(payment.date)}
+                dateFormat="dd/mm/yy"
+                placeholder="Seleccionar"
               />
               {submitted && !payment.date && (
                 <small className="p-invalid">La fecha es necesaria</small>
@@ -549,6 +588,20 @@ const onInputNumberChange = (e, name) => {
             </div>
           </div>
         </Dialog>
+        <Dialog
+            visible={adminDialog}
+            style={{ width: "450px" }}
+            modal
+            onHide={hideAdminDialog}
+          >
+            <div className="flex align-items-center justify-content-center">
+              <i
+                className="pi pi-exclamation-triangle mr-3"
+                style={{ fontSize: "2rem" }}
+              />
+              {payment && <span>No tienes los permisos necesarios</span>}
+            </div>
+          </Dialog>
       </div>
     </>
   );

@@ -558,11 +558,11 @@ const Products = () => {
               <label htmlFor="fecha">Fecha</label>
               <Calendar
                 id="fecha"
-                value={formatDate(product.date)}
+                value={new Date(product.date)}
                 onChange={(e) => onCalenderChange(e, "date")}
                 inputMode="date"
                 inline={false}
-                placeholder={formatDate(product.date)}
+                dateFormat="dd/mm/yy"
               />
               {submitted && !product.date && (
                 <small className="p-invalid">La fecha es necesaria</small>
