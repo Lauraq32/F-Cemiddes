@@ -700,6 +700,7 @@ const ReservationsTable = ({ reservations, onEdit, onDelete,  onSaveReservation,
                   inputMode="date"
                   inline={false}
                   placeholder={formatDate(patient.date)}
+                  dateFormat="dd/mm/yy"
                 />
                 {submitted && !patient.date && (
                   <small className="p-invalid">la fecha es necesaria</small>

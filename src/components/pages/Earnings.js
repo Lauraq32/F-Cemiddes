@@ -54,6 +54,7 @@ const EarningsPage = () => {
   const [dropDownDoctor, setDropDownDoctor] = useState([]);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [showDialog] = useDialog();
+  const [dialogIsVisible, dialogContent, showDialogs, hideDialogs] = useDialog();
 
   const doctorsOpts = useMemo(
     () =>
@@ -83,6 +84,7 @@ const EarningsPage = () => {
   const hideDialog = () => {
     setSubmitted(false);
     setPagoDialog(false);
+    hideDialogs(false);
   };
 
   const uptdatePago = async () => {
@@ -246,8 +248,8 @@ const EarningsPage = () => {
     );
   };
 
-  const showSelectedProductDialog = (pago) => {
-    showDialog(pago);
+  const showSelectedProductDialog = (payment) => {
+    showDialogs(payment);
   };
 
   const statusOptions = [
@@ -588,6 +590,22 @@ const EarningsPage = () => {
             </div>
           </div>
         </Dialog>
+        {dialogIsVisible && 
+                        <Dialog 
+                        visible={dialogIsVisible}
+                        style={{ width: "450px" }}
+                        header="Detalles de los Pagos"
+                        footer={<div />}
+                        className="p-fluid"
+                        onHide={hideDialogs}
+                        modal>
+                        <div className="modal-content">
+                        <p><b>Doctora:</b>{" "}{dialogContent.doctor.name}</p>
+                        <p><b>Cantidad:</b>{" "}{formatCurrency(dialogContent.amount)}</p>
+                        <p><b>Fecha:</b>{" "}{formatDate(dialogContent.date)}</p>
+                        <p><b>Estado Del Pago:</b>{" "}{dialogContent.status}</p>
+                        </div>
+                        </Dialog>}
         <Dialog
             visible={adminDialog}
             style={{ width: "450px" }}

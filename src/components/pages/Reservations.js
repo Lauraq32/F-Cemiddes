@@ -19,10 +19,24 @@ import ReservationsTable from "../tables/ReservationsTable";
 import axios from "axios";
 import fetchReservations from "../tables/ReservationsTable/index";
 import { useDialog } from "../../hooks/useDialog";
-import { format } from 'date-fns';
-
+import { format } from "date-fns";
 
 const Reservations = () => {
+  const formatDate = (value) => {
+    return new Date(value).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  const formatCurrency = (value) => {
+    return value.toLocaleString("es-MX", {
+      style: "currency",
+      currency: "DOP",
+    });
+  };
+
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [products, setProducts] = useState([]);
   // const [adminDialog, setAdminDialog] = useState(false);
@@ -33,7 +47,7 @@ const Reservations = () => {
   const [doctor, setDoctors] = useState([]);
   const [doctors] = useDoctors();
   const [dialogIsVisible, dialogContent, showDialog, hideDialog] = useDialog();
-  const [reservations, setReservations] = useState([])
+  const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
     fetchReservations();
@@ -211,8 +225,8 @@ const Reservations = () => {
         detail: "Actualizado Exitosamente",
         life: 3000,
       });
-      
-      await fetchReservations()
+
+      await fetchReservations();
 
       hideEditDialog();
     } catch (error) {
@@ -305,15 +319,17 @@ const Reservations = () => {
   };
 
   const findProducts = () => {
-    const reservationProducts = {}
-    selectedReservation.products.forEach(product => {
-      reservationProducts[product.id || product._id] = true
-    })
+    const reservationProducts = {};
+    selectedReservation.products.forEach((product) => {
+      reservationProducts[product.id || product._id] = true;
+    });
 
-    const selectedProducts = products.filter(product => reservationProducts[product._id]).map(product => ({
-      ...product,
-      id: product._id
-    }))
+    const selectedProducts = products
+      .filter((product) => reservationProducts[product._id])
+      .map((product) => ({
+        ...product,
+        id: product._id,
+      }));
 
     return selectedProducts;
   };
@@ -357,18 +373,17 @@ const Reservations = () => {
   };
 
   const statusOptions = [
-    {id: 1, name: 'Pendiente', status: 'pendiente'},
-    {id: 2, name: 'Completado', status: 'completado'},
-    {id: 3, name: 'Cancelado', status: 'cancelado'},
-  ]
+    { id: 1, name: "Pendiente", status: "pendiente" },
+    { id: 2, name: "Completado", status: "completado" },
+    { id: 3, name: "Cancelado", status: "cancelado" },
+  ];
 
-
-  const [status, setStatus] = useState()
+  const [status, setStatus] = useState();
 
   const updateStatus = (e) => {
-    setStatus(e.value)
-    setSelectedReservation({...selectedReservation, status: e.value.status})
-  }
+    setStatus(e.value);
+    setSelectedReservation({ ...selectedReservation, status: e.value.status });
+  };
 
   const productOptions = products.map((product) => ({
     ...product,
@@ -566,16 +581,16 @@ const Reservations = () => {
             />
           </div>
           <div className="field">
-              <label htmlFor="status">Status</label>
-              <Dropdown
-                id="status"
-                optionLabel="name"
-                value={status}
-                options={statusOptions}
-                onChange={updateStatus}
-                placeholder="Seleccionar"
-              />
-            </div>
+            <label htmlFor="status">Status</label>
+            <Dropdown
+              id="status"
+              optionLabel="name"
+              value={status}
+              options={statusOptions}
+              onChange={updateStatus}
+              placeholder="Seleccionar"
+            />
+          </div>
           <Dialog
             visible={deleteReservationDialog}
             style={{ width: "450px" }}
@@ -613,10 +628,10 @@ const Reservations = () => {
               <b>Concepto:</b> {dialogContent.concept}
             </p>
             <p>
-              <b>Monto pagado:</b> {dialogContent.amountPayable}
+              <b>Monto pagado:</b> {formatCurrency(dialogContent.amountPayable)}
             </p>
             <p>
-              <b>Fecha:</b> {dialogContent.date}
+              <b>Fecha:</b> {formatDate(dialogContent.date)}
             </p>
             <p>
               <b>Doctor:</b> {dialogContent.doctor.name}
@@ -628,7 +643,7 @@ const Reservations = () => {
               <b>Tipo de pago:</b> {dialogContent.patientType}
             </p>
             <p>
-              <b>Porcentaje:</b> {dialogContent.percent}
+              <b>Porcentaje:</b> {dialogContent.percent}{"%"}
             </p>
             <p>
               <b>Tel&eacute;fono:</b> {dialogContent.phone}

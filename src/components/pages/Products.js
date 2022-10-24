@@ -647,6 +647,8 @@ const Products = () => {
                 <p>
                   <b>Precio:</b> {formatCurrency(dialogContent.price)}
                 </p>
+                <p><b>Fecha:</b>{" "}{formatDate(dialogContent.date)}</p>
+                <p><b>Estado De Los Productos:</b>{" "}{dialogContent.status}</p>
               </div>
             </Dialog>
           )}
