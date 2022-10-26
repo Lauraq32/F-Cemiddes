@@ -490,7 +490,7 @@ const Products = () => {
               />
               {submitted && !product.name && (
                 <small className="p-invalid">
-                  el nombre de la doctora es necesario.
+                  el nombre del producto es necesario
                 </small>
               )}
             </div>
@@ -505,7 +505,7 @@ const Products = () => {
                   integeronly
                 />
                 {submitted && !product.amount && (
-                  <small className="p-invalid">el Cantidad es necesario.</small>
+                  <small className="p-invalid">la Cantidad es necesaria.</small>
                 )}
               </div>
               <div className="field col">
