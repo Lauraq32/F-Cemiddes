@@ -9,8 +9,7 @@ import { FileUpload } from 'primereact/fileupload';
 import { Toolbar } from 'primereact/toolbar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import {Calendar} from 'primereact/calendar';
-import headers, { getHeaders } from '../service/token';
+import { getHeaders } from '../service/token';
 import axios from 'axios';
 import { useDialog } from "../../hooks/useDialog";
 
@@ -92,14 +91,6 @@ const Doctors = () => {
         setDeleteDoctorsDialog(false);
     }
 
-    const onCalenderChange = (e, doctor) => {
-        const val = e.value || 0;
-        let doctora = { ...doctor };
-        doctora[`${doctor}`] = val;
-        e.preventDefault();
-        setDoctor(doctora);
-    }
-
     const saveDoctor = () => {
         setSubmitted(true);
         if (doctor.name.trim()) {
@@ -146,15 +137,6 @@ const Doctors = () => {
         }
     }
 
-    const confirmDeleteDoctor = (doctor) => {
-        if(localStorage.getItem('role') !== 'ADMIN'){
-            setAdminDialog(true);
-        } else {
-            setDoctor(doctor);
-            setDeleteDoctorDialog(true);
-        }
-    }
-
     const deleteDoctor = () => {
         let _doctors = doctors.filter(val => val._id !== doctor._id);
         setDoctors(_doctors);
@@ -169,13 +151,6 @@ const Doctors = () => {
 
     const exportCSV = () => {
         dt.current.exportCSV();
-    }
-
-    const confirmDeleteSelected = () => {
-        if(localStorage.getItem('role') !== 'ADMIN')
-            setAdminDialog(true);
-        else 
-            setDeleteDoctorsDialog(true);
     }
 
     const deleteSelectedDoctors = () => {
@@ -208,7 +183,7 @@ const Doctors = () => {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <FileUpload mode="basic" accept="doc/*" maxFileSize={1000000} label="Importar" chooseLabel="Importar" className="mr-2 inline-block" />
+                {/* <FileUpload mode="basic" accept="doc/*" maxFileSize={1000000} label="Importar" chooseLabel="Importar" className="mr-2 inline-block" /> */}
                 <Button label="Exportar" icon="pi pi-upload" className="p-button-help" onClick={exportCSV} />
             </React.Fragment>
         )
@@ -225,17 +200,6 @@ const Doctors = () => {
             <>
                 <span className="p-column-title">Numeromovil</span>
                 {rowData.phone}
-            </>
-        );
-    }
-
-    const dateBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Fecha</span>
-                {/* {rowData.date} */}
-                {formatDate(rowData.date)}
-
             </>
         );
     }

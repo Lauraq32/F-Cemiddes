@@ -5,7 +5,6 @@ import { Toast } from "primereact/toast";
 import { Toolbar } from "primereact/toolbar";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
-import { FileUpload } from "primereact/fileupload";
 import { Dialog } from "primereact/dialog";
 import axios from "axios";
 import classNames from "classnames";
@@ -310,14 +309,14 @@ const ReservationsTable = ({ reservations, onEdit, onDelete,  onSaveReservation,
   const rightToolbarTemplate = () => {
     return (
       <React.Fragment>
-        <FileUpload
+        {/* <FileUpload
           mode="basic"
           accept="doc/*"
           maxFileSize={1000000}
           label="Importar"
           chooseLabel="Importar"
           className="mr-2 inline-block"
-        />
+        /> */}
         <Button
           label="Exportar"
           icon="pi pi-upload"
@@ -428,26 +427,12 @@ const ReservationsTable = ({ reservations, onEdit, onDelete,  onSaveReservation,
     setReservation(fields);
   };
 
-  const treatmentBodyTemplate = (rowData) => {
-    return (
-      <>
-        <span className="p-column-title">Tratamiento</span>
-        {rowData.patientTreatment.treatment.name}
-      </>
-    );
-  };
-
   const editReservation = (reservation) => {
     if (localStorage.getItem("role") !== "ADMIN") {
       setAdminDialog(true);
     } else {
       onEdit(reservation);
     }
-  };
-
-  const deleteReservation = (reservation) => {
-    setReservation(reservation);
-    setDeleteReservationDialog(true);
   };
 
   const statusOptions = [

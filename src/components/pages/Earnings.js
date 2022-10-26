@@ -3,8 +3,6 @@ import { Calendar } from "primereact/calendar";
 import { Dropdown } from "primereact/dropdown";
 import axios from "axios";
 import { Toast } from "primereact/toast";
-import classNames from "classnames";
-
 import { useDoctors } from "../../hooks/useDoctors";
 import { Toolbar } from "primereact/toolbar";
 import { DataTable } from "primereact/datatable";
@@ -16,7 +14,6 @@ import { FileUpload } from "primereact/fileupload";
 import { format } from "date-fns";
 import { Dialog } from "primereact/dialog";
 import { InputNumber } from "primereact/inputnumber";
-import { NavLink } from "react-router-dom";
 
 const EarningsPage = () => {
   const formatDate = (value) => {
@@ -51,9 +48,7 @@ const EarningsPage = () => {
   const [endingDate, setEndingDate] = useState("");
   const toast = useRef(null);
   const dt = useRef(null);
-  const [dropDownDoctor, setDropDownDoctor] = useState([]);
   const [globalFilter, setGlobalFilter] = useState(null);
-  const [showDialog] = useDialog();
   const [dialogIsVisible, dialogContent, showDialogs, hideDialogs] = useDialog();
 
   const doctorsOpts = useMemo(
@@ -193,12 +188,6 @@ const EarningsPage = () => {
       console.error(error);
     }
   }
-
-  const onInputChange = (e, name) => {
-    const value = (e.target && e.target.value) || "";
-
-    setPayment({ ...payment, [name]: value });
-  };
 
   const onInputNumberChange = (e, name) => {
     const value = e.value || 0;
@@ -349,14 +338,14 @@ const EarningsPage = () => {
   const rightToolbarTemplate = () => {
     return (
       <React.Fragment>
-        <FileUpload
+        {/* <FileUpload
           mode="basic"
           accept="doc/*"
           maxFileSize={1000000}
           label="Importar"
           chooseLabel="Importar"
           className="mr-2 inline-block"
-        />
+        /> */}
         <Button
           label="Exportar"
           icon="pi pi-upload"

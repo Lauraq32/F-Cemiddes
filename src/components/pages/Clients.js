@@ -6,13 +6,11 @@ import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { FileUpload } from "primereact/fileupload";
 import { Toolbar } from "primereact/toolbar";
-import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { NavLink } from "react-router-dom";
-import { Calendar } from "primereact/calendar";
 import axios from "axios";
-import headers, { getHeaders } from "../service/token";
+import { getHeaders } from "../service/token";
 import { useDialog } from "../../hooks/useDialog";
 import { Dropdown } from "primereact/dropdown";
 
@@ -32,6 +30,8 @@ const Clients = () => {
     email: "",
     status: "activo",
   };
+
+  
 
   const [clients, setClients] = useState(null);
   const [clientDialog, setClientDialog] = useState(false);
@@ -168,15 +168,6 @@ const Clients = () => {
     }
   };
 
-  const confirmDeleteClient = (client) => {
-    if (localStorage.getItem("role") !== "ADMIN") {
-      setAdminDialog(true);
-    } else {
-      setClient(client);
-      setDeleteClientDialog(true);
-    }
-  };
-
   const deleteClient = () => {
     let _clients = clients.filter((val) => val._id !== client._id);
     setClients(_clients);
@@ -201,12 +192,6 @@ const Clients = () => {
     dt.current.exportCSV();
   };
 
-  const confirmDeleteSelected = () => {
-    if (localStorage.getItem("role") !== "ADMIN") {
-      setAdminDialog(true);
-    } else setDeleteClientsDialog(true);
-  };
-
   const deleteSelectedClients = () => {
     let _clients = clients.filter((val) => !selectedClients.includes(val));
     setClients(_clients);
@@ -220,27 +205,11 @@ const Clients = () => {
     });
   };
 
-  const onCalenderChange = (e, patient) => {
-    const val = e.value || 0;
-    let _client = { ...client };
-    _client[`${patient}`] = val;
-    e.preventDefault();
-    setClient(_client);
-  };
-
   const onInputChange = (e, patient, status) => {
     const val = (e.target && e.target.value) || "";
     let _client = { ...client };
     _client[`${patient}`] = val;
     _client[`${status}`] = val;
-
-    setClient(_client);
-  };
-
-  const onInputNumberChange = (e, patient) => {
-    const val = e.value || 0;
-    let _client = { ...client };
-    _client[`${patient}`] = val;
 
     setClient(_client);
   };
@@ -264,14 +233,14 @@ const Clients = () => {
   const rightToolbarTemplate = () => {
     return (
       <React.Fragment>
-        <FileUpload
+        {/* <FileUpload
           mode="basic"
           accept="doc/*"
           maxFileSize={1000000}
           label="Importar"
           chooseLabel="Importar"
           className="mr-2 inline-block"
-        />
+        /> */}
         <Button
           label="Exportar"
           icon="pi pi-upload"

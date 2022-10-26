@@ -10,7 +10,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
-import headers, { getHeaders } from '../service/token';
+import { getHeaders } from '../service/token';
 import { NavLink } from 'react-router-dom';
 import { useDialog } from "../../hooks/useDialog";
 
@@ -124,15 +124,6 @@ const Treatments = () => {
         }
     }
 
-    const confirmDeleteProduct = (treatment) => {
-        if(localStorage.getItem('role') !== 'ADMIN'){
-            setAdminDialog(true);
-        } else {
-            setProduct(treatment);
-            setDeleteProductDialog(true);
-        }
-    }
-
     const deleteProduct = () => {
         let _treatments = treatments.filter(val => val._id !== treatment._id);
         setProducts(_treatments);
@@ -149,13 +140,6 @@ const Treatments = () => {
 
     const exportCSV = () => {
         dt.current.exportCSV();
-    }
-
-    const confirmDeleteSelected = () => {
-        if(localStorage.getItem('role') !== 'ADMIN'){
-            setAdminDialog(true);
-        } else 
-            setDeleteProductsDialog(true);
     }
 
     const deleteSelectedProducts = () => {
@@ -201,19 +185,10 @@ const Treatments = () => {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} label="Importar" chooseLabel="Import" className="mr-2 inline-block" />
+                {/* <FileUpload mode="basic" accept="image/*" maxFileSize={1000000} label="Importar" chooseLabel="Import" className="mr-2 inline-block" /> */}
                 <Button label="Exportar" icon="pi pi-upload" className="p-button-help" onClick={exportCSV} />
             </React.Fragment>
         )
-    }
-
-    const nameBodyTemplate = (rowData) => {
-        return (
-            <>
-                <span className="p-column-title">Productos</span>
-                {rowData.treatments}
-            </>
-        );
     }
 
     const treatmentBodyTemplate = (rowData) => {

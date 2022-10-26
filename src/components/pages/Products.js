@@ -10,7 +10,7 @@ import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import axios from "axios";
-import headers, { getHeaders } from "../service/token";
+import { getHeaders } from "../service/token";
 import { NavLink } from "react-router-dom";
 import { useDialog } from "../../hooks/useDialog";
 import { Dropdown } from "primereact/dropdown";
@@ -31,6 +31,7 @@ const Products = () => {
     price: 0,
     status: "lleno",
     date: formatDate(Date.now()),
+    amountofproduct: ""
   };
 
   const [products, setProducts] = useState(null);
@@ -166,15 +167,6 @@ const Products = () => {
     }
   };
 
-  const confirmDeleteProduct = (product) => {
-    if (localStorage.getItem("role") !== "ADMIN") {
-      setAdminDialog(true);
-    } else {
-      setProduct(product);
-      setDeleteProductDialog(true);
-    }
-  };
-
   const deleteProduct = () => {
     let _products = products.filter((val) => val._id !== product._id);
     setProducts(_products);
@@ -198,12 +190,6 @@ const Products = () => {
 
   const exportCSV = () => {
     dt.current.exportCSV();
-  };
-
-  const confirmDeleteSelected = () => {
-    if (localStorage.getItem("role") !== "ADMIN") {
-      setAdminDialog(true);
-    } else setDeleteProductsDialog(true);
   };
 
   const onCalenderChange = (e) => {
@@ -261,14 +247,14 @@ const Products = () => {
   const rightToolbarTemplate = () => {
     return (
       <React.Fragment>
-        <FileUpload
+        {/* <FileUpload
           mode="basic"
           accept="image/*"
           maxFileSize={1000000}
           label="Importar"
           chooseLabel="Import"
           className="mr-2 inline-block"
-        />
+        /> */}
         <Button
           label="Exportar"
           icon="pi pi-upload"
@@ -453,7 +439,7 @@ const Products = () => {
             ></Column>
             <Column
               field="amount"
-              header="Cantidad"
+              header="Cantidad del producto"
               body={quantityBodyTemplate}
               sortable
               headerStyle={{ width: "14%", minWidth: "10rem" }}
@@ -522,7 +508,6 @@ const Products = () => {
                   <small className="p-invalid">el Cantidad es necesario.</small>
                 )}
               </div>
-
               <div className="field col">
                 <label htmlFor="price">Precio</label>
                 <InputNumber

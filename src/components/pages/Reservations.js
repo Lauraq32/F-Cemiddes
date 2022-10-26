@@ -1,23 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import classNames from "classnames";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { RadioButton } from "primereact/radiobutton";
-import { FileUpload } from "primereact/fileupload";
-import { Toolbar } from "primereact/toolbar";
 import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
-import { Checkbox } from "primereact/checkbox";
 import { MultiSelect } from "primereact/multiselect";
 import { useDoctors } from "../../hooks/useDoctors";
 import ReservationsTable from "../tables/ReservationsTable";
 import axios from "axios";
-import fetchReservations from "../tables/ReservationsTable/index";
 import { useDialog } from "../../hooks/useDialog";
 import { format } from "date-fns";
 
@@ -640,7 +634,7 @@ const Reservations = () => {
               <b>Paciente:</b> {dialogContent.patient.name}
             </p>
             <p>
-              <b>Tipo de pago:</b> {dialogContent.patientType}
+              <b>Tipo de pago:</b> {dialogContent.paymentType}
             </p>
             <p>
               <b>Porcentaje:</b> {dialogContent.percent}{"%"}

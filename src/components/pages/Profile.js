@@ -3,7 +3,7 @@ import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import axios from "axios";
-import headers, { getHeaders } from "../service/token";
+import { getHeaders } from "../service/token";
 import { Dropdown } from "primereact/dropdown";
 
 const Profile = () => {

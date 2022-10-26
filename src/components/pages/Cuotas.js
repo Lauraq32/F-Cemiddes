@@ -1,19 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import classNames from "classnames";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { FileUpload } from "primereact/fileupload";
 import { Toolbar } from "primereact/toolbar";
-import { InputNumber } from "primereact/inputnumber";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { useDialog } from "../../hooks/useDialog";
 
 import axios from "axios";
-import headers, { getHeaders } from "../service/token";
+import { getHeaders } from "../service/token";
 
 const Products = () => {
   let emptyCuotas = {
@@ -239,15 +237,6 @@ const Products = () => {
     }
   };
 
-  const confirmDeleteProduct = (cuota) => {
-    if (localStorage.getItem("role") !== "ADMIN") {
-      setAdminDialog(true);
-    } else {
-      setCuota(cuota);
-      setDeleteProductDialog(true);
-    }
-  };
-
   const deleteProduct = () => {
     let _products = cuotas.filter((val) => val._id !== cuota._id);
     setCuotas(_products);
@@ -274,11 +263,6 @@ const Products = () => {
     dt.current.exportCSV();
   };
 
-  const confirmDeleteSelected = () => {
-    if (localStorage.getItem("role") !== "ADMIN") setAdminDialog(true);
-    else setDeleteProductsDialog(true);
-  };
-
   const deleteSelectedProducts = () => {
     let _products = cuotas.filter((val) => !selectedCuotas.includes(val));
     setCuotas(_products);
@@ -291,22 +275,6 @@ const Products = () => {
       detail: "Borrado Exitosamente",
       life: 3000,
     });
-  };
-
-  const onInputChange = (e, name) => {
-    const val = (e.target && e.target.value) || "";
-    let _product = { ...cuota };
-    _product[`${name}`] = val;
-
-    setCuota(_product);
-  };
-
-  const onInputNumberChange = (e, name) => {
-    const val = e.value || 0;
-    let _product = { ...cuota };
-    _product[`${name}`] = val;
-
-    setCuota(_product);
   };
 
   const showDueDetailsDialog = (fee) => {
@@ -332,14 +300,14 @@ const Products = () => {
   const rightToolbarTemplate = () => {
     return (
       <React.Fragment>
-        <FileUpload
+        {/* <FileUpload
           mode="basic"
           accept="image/*"
           maxFileSize={1000000}
           label="Importar"
           chooseLabel="Import"
           className="mr-2 inline-block"
-        />
+        /> */}
         <Button
           label="Exportar"
           icon="pi pi-upload"
@@ -417,10 +385,6 @@ const Products = () => {
   const updateStatus = (e) => {
     setStatus(e.value);
     setCuota({ ...cuota, status: e.value.status });
-  };
-
-  const showSelectedClientDialog = (cuota) => {
-    showDialog(cuota);
   };
 
   const actionBodyTemplate = (rowData) => {
